@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import { ProtectedRoute } from './components/common/ProtectedRoute'
 import { AuthLayout } from './layouts/AuthLayout'
 import { AdminLayout } from './layouts/AdminLayout'
@@ -22,7 +23,8 @@ import { OwnerDetail } from './pages/admin/owners/OwnerDetail'
 
 function App() {
   return (
-    <AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
       <Routes>
         {/* Rotas Públicas de Autenticação */}
         <Route element={<ProtectedRoute requireAuth={false} />}>
@@ -55,9 +57,10 @@ function App() {
 
         {/* Rota inicial provisória redirecionando para login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        
+
       </Routes>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

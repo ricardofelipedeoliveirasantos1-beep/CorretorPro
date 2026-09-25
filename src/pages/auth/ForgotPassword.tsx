@@ -29,7 +29,7 @@ export function ForgotPassword() {
       // Mensagem genérica por segurança para não vazar se o email existe ou não
       setSuccess('Se o e-mail existir em nossa base, você receberá um link de recuperação em instantes.')
     }
-    
+
     setIsLoading(false)
   }
 

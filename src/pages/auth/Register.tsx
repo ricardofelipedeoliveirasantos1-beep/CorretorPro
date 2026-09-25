@@ -119,7 +119,7 @@ export function Register() {
               disabled={isLoading}
             />
           </div>
-          
+
           <Input
             id="email"
             name="email"
@@ -130,7 +130,7 @@ export function Register() {
             required
             disabled={isLoading}
           />
-          
+
           <Input
             id="password"
             name="password"

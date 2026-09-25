@@ -12,12 +12,12 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [isVideoViewerOpen, setIsVideoViewerOpen] = useState(false)
-  
+
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   // Sort photos by order, and fallback if missing
   const sortedPhotos = [...photos].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-  
+
   const handleScroll = () => {
     if (!scrollContainerRef.current) return
     const { scrollLeft, clientWidth } = scrollContainerRef.current
@@ -62,23 +62,23 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
     <div className="space-y-4">
       {/* Main Gallery Area */}
       <div className="relative overflow-hidden rounded-xl bg-base-100 group">
-        <div 
+        <div
           ref={scrollContainerRef}
           className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           onScroll={handleScroll}
         >
           {sortedPhotos.map((photo, idx) => (
-            <div 
-              key={photo.id} 
+            <div
+              key={photo.id}
               className="min-w-full flex-none snap-center snap-always aspect-[4/3] md:aspect-[16/9]"
               onClick={() => {
                 setCurrentIndex(idx)
                 setIsViewerOpen(true)
               }}
             >
-              <img 
-                src={photo.url} 
-                alt={`Foto ${idx + 1}`} 
+              <img
+                src={photo.url}
+                alt={`Foto ${idx + 1}`}
                 className="h-full w-full object-cover cursor-pointer"
                 onError={(e) => {
                   // Fallback for broken images
@@ -94,7 +94,7 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
         {sortedPhotos.length > 1 && (
           <>
             {currentIndex > 0 && (
-              <button 
+              <button
                 onClick={handlePrev}
                 aria-label="Foto anterior"
                 className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/60 active:scale-95 md:opacity-0 md:group-hover:opacity-100"
@@ -102,9 +102,9 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
                 <ChevronLeft className="h-6 w-6" />
               </button>
             )}
-            
+
             {currentIndex < sortedPhotos.length - 1 && (
-              <button 
+              <button
                 onClick={handleNext}
                 aria-label="Próxima foto"
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/60 active:scale-95 md:opacity-0 md:group-hover:opacity-100"
@@ -123,8 +123,8 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
       {/* Videos Button */}
       {videos && videos.length > 0 && (
         <div className="flex justify-center md:justify-start">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full md:w-auto"
             onClick={() => setIsVideoViewerOpen(true)}
           >
@@ -136,18 +136,18 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
 
       {/* Fullscreen Image Viewer Modal */}
       {isViewerOpen && (
-        <ImageViewer 
-          photos={sortedPhotos} 
-          initialIndex={currentIndex} 
-          onClose={() => setIsViewerOpen(false)} 
+        <ImageViewer
+          photos={sortedPhotos}
+          initialIndex={currentIndex}
+          onClose={() => setIsViewerOpen(false)}
         />
       )}
 
       {/* Video Viewer Modal */}
       {isVideoViewerOpen && (
-        <VideoViewer 
-          videos={videos} 
-          onClose={() => setIsVideoViewerOpen(false)} 
+        <VideoViewer
+          videos={videos}
+          onClose={() => setIsVideoViewerOpen(false)}
         />
       )}
     </div>
@@ -198,7 +198,7 @@ function ImageViewer({ photos, initialIndex, onClose }: { photos: PropertyPhoto[
         <div className="text-sm font-medium text-white/80">
           {index + 1} / {photos.length}
         </div>
-        <button 
+        <button
           onClick={onClose}
           aria-label="Fechar visualizador"
           className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
@@ -208,15 +208,15 @@ function ImageViewer({ photos, initialIndex, onClose }: { photos: PropertyPhoto[
       </div>
 
       <div className="relative flex-1 overflow-hidden">
-        <div 
+        <div
           ref={scrollRef}
           className="flex h-full snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           onScroll={handleScroll}
         >
           {photos.map((photo, i) => (
             <div key={photo.id} className="min-w-full flex-none snap-center snap-always flex items-center justify-center p-2 md:p-8">
-              <img 
-                src={photo.url} 
+              <img
+                src={photo.url}
                 className="max-h-full max-w-full object-contain select-none"
                 alt={`Ampliada ${i + 1}`}
                 onError={(e) => {
@@ -231,7 +231,7 @@ function ImageViewer({ photos, initialIndex, onClose }: { photos: PropertyPhoto[
         {photos.length > 1 && (
           <>
             {index > 0 && (
-              <button 
+              <button
                 onClick={(e) => { e.stopPropagation(); goTo(index - 1) }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 hidden md:flex rounded-full bg-black/50 p-4 text-white hover:bg-black/80 transition-all"
               >
@@ -239,7 +239,7 @@ function ImageViewer({ photos, initialIndex, onClose }: { photos: PropertyPhoto[
               </button>
             )}
             {index < photos.length - 1 && (
-              <button 
+              <button
                 onClick={(e) => { e.stopPropagation(); goTo(index + 1) }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex rounded-full bg-black/50 p-4 text-white hover:bg-black/80 transition-all"
               >
@@ -272,7 +272,7 @@ function VideoViewer({ videos, onClose }: { videos: { id: string; url: string; n
         <div className="text-sm font-medium text-white/80">
           Vídeo {index + 1} de {videos.length}
         </div>
-        <button 
+        <button
           onClick={onClose}
           aria-label="Fechar vídeo"
           className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
@@ -284,7 +284,7 @@ function VideoViewer({ videos, onClose }: { videos: { id: string; url: string; n
       <div className="flex flex-1 flex-col items-center justify-center p-4">
         {video ? (
           <div className="relative w-full max-w-4xl aspect-video rounded-lg overflow-hidden bg-black">
-            <video 
+            <video
               key={video.id} // forces reload when index changes
               src={video.url}
               controls
@@ -303,16 +303,16 @@ function VideoViewer({ videos, onClose }: { videos: { id: string; url: string; n
 
         {videos.length > 1 && (
           <div className="mt-8 flex items-center gap-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-white/20 text-white hover:bg-white/10"
               onClick={() => setIndex(i => Math.max(0, i - 1))}
               disabled={index === 0}
             >
               <ChevronLeft className="mr-1 h-4 w-4" /> Anterior
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-white/20 text-white hover:bg-white/10"
               onClick={() => setIndex(i => Math.min(videos.length - 1, i + 1))}
               disabled={index === videos.length - 1}

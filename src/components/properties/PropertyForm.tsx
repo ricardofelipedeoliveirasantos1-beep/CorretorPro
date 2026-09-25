@@ -13,10 +13,10 @@ interface PropertyFormProps {
 
 export function PropertyForm({ initialData, isEditMode = false }: PropertyFormProps) {
   const navigate = useNavigate()
-  
+
   const [customFeatures, setCustomFeatures] = useState<{name: string, value: string}[]>(initialData?.features?.customFeatures || [])
   const [customAmenities, setCustomAmenities] = useState<string[]>(initialData?.amenities?.others || [])
-  
+
   const [showNewFeature, setShowNewFeature] = useState(false)
   const [newFeatureName, setNewFeatureName] = useState('')
   const [newFeatureValue, setNewFeatureValue] = useState('')
@@ -26,7 +26,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
 
   const [photos, setPhotos] = useState<any[]>(initialData?.photos || [])
   const [videos, setVideos] = useState<any[]>([])
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleOpenMap = () => {
@@ -39,12 +39,12 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
     const state = (form.elements.namedItem('state') as HTMLInputElement)?.value
 
     const queryParts = [street, number, neighborhood, city, state].filter(Boolean)
-    
+
     if (queryParts.length < 2) {
       alert("Não há dados de endereço suficientes para abrir o mapa. Preencha pelo menos a rua e cidade.")
       return
     }
-    
+
     const query = queryParts.join(', ')
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, '_blank')
   }
@@ -92,14 +92,14 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
            alert(`A imagem ${file.name} tem mais de 10MB e foi bloqueada.`)
            return
         }
-        const newPhoto = { 
-          id: Math.random().toString(), 
-          url: URL.createObjectURL(file), 
-          isCover: photos.length === 0, 
-          order: photos.length, 
-          file, 
-          name: file.name, 
-          size: file.size 
+        const newPhoto = {
+          id: Math.random().toString(),
+          url: URL.createObjectURL(file),
+          isCover: photos.length === 0,
+          order: photos.length,
+          file,
+          name: file.name,
+          size: file.size
         }
         setPhotos(prev => [...prev, newPhoto])
       } else if (file.type.startsWith('video/')) {
@@ -107,12 +107,12 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
            alert(`O vídeo ${file.name} tem mais de 20MB e foi bloqueado.`)
            return
         }
-        const newVideo = { 
-          id: Math.random().toString(), 
-          url: URL.createObjectURL(file), 
-          file, 
-          name: file.name, 
-          size: file.size 
+        const newVideo = {
+          id: Math.random().toString(),
+          url: URL.createObjectURL(file),
+          file,
+          name: file.name,
+          size: file.size
         }
         setVideos(prev => [...prev, newVideo])
       } else {
@@ -133,7 +133,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
     e.preventDefault()
     const form = e.currentTarget
     const formData = new FormData(form)
-    
+
     // Extract selected custom amenities
     const activeAmenities = customAmenities.filter(amenity => formData.get(`custom_amenity_${amenity}`) === 'on')
 
@@ -212,12 +212,12 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
             <Link to="/imoveis"><ArrowLeft className="h-4 w-4" /></Link>
           </Button>
-          <h1 className="text-2xl font-bold tracking-tight text-base-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-base-900 dark:text-[#F8FAFC] flex items-center gap-2">
             {isEditMode ? `Editar Imóvel ${initialData?.code || ''}` : 'Novo Imóvel'}
-            <button 
+            <button
               type="button"
               onClick={handleOpenMap}
-              className="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-primary-600 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+              className="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-primary-600 dark:text-[#1685FF] hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors dark:bg-[#111C2E] dark:border dark:border-[#334155] dark:text-[#60A5FA] dark:hover:text-[#1685FF] dark:focus:ring-offset-0"
               title="Abrir no Google Maps"
             >
               <Globe className="h-4 w-4" />
@@ -233,33 +233,33 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
       </div>
 
       <form id="property-form" onSubmit={handleSubmit} className="space-y-8">
-        
+
         {/* 1. Informações principais */}
-        <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2 border-b border-base-100 pb-2 text-lg font-bold text-base-900">
-            <Info className="h-5 w-5 text-primary-600" />
+        <section className="rounded-2xl border border-base-200 bg-white p-6 shadow-sm dark:bg-[#111C2E] dark:border-[#24344D] dark:shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-all duration-200">
+          <div className="mb-4 flex items-center gap-2 border-b border-base-100 dark:border-[#24344D] pb-2 text-lg font-bold text-base-900 dark:text-[#F8FAFC] dark:text-[#F8FAFC]">
+            <Info className="h-5 w-5 text-primary-600 dark:text-[#1685FF]" />
             Informações Principais
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Código *</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Código *</label>
               <Input name="code" required placeholder="Ex: AP-102" defaultValue={initialData?.code} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Finalidade *</label>
-              <select name="purpose" required defaultValue={initialData?.purpose || ''} className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Finalidade *</label>
+              <select name="purpose" required defaultValue={initialData?.purpose || ''} className="w-full rounded-xl border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all duration-200 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#F8FAFC] dark:focus:border-[#1685FF] dark:focus:ring-[rgba(22,133,255,0.15)]">
                 <option value="">Selecione...</option>
                 <option value="Venda">Venda</option>
                 <option value="Aluguel">Aluguel</option>
               </select>
             </div>
             <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-base-700">Título do Anúncio *</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Título do Anúncio *</label>
               <Input name="title" required placeholder="Ex: Lindo apartamento com vista para o mar" defaultValue={initialData?.title} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Tipo de Imóvel *</label>
-              <select name="type" required defaultValue={initialData?.type || ''} className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Tipo de Imóvel *</label>
+              <select name="type" required defaultValue={initialData?.type || ''} className="w-full rounded-xl border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all duration-200 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#F8FAFC] dark:focus:border-[#1685FF] dark:focus:ring-[rgba(22,133,255,0.15)]">
                 <option value="">Selecione...</option>
                 <option value="Apartamento">Apartamento</option>
                 <option value="Casa">Casa</option>
@@ -269,8 +269,8 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Status *</label>
-              <select name="status" required defaultValue={initialData?.status || 'Disponível'} className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Status *</label>
+              <select name="status" required defaultValue={initialData?.status || 'Disponível'} className="w-full rounded-xl border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all duration-200 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#F8FAFC] dark:focus:border-[#1685FF] dark:focus:ring-[rgba(22,133,255,0.15)]">
                 <option value="Disponível">Disponível</option>
                 <option value="Reservado">Reservado</option>
                 <option value="Em negociação">Em negociação</option>
@@ -283,123 +283,123 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
         </section>
 
         {/* 2. Valores */}
-        <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2 border-b border-base-100 pb-2 text-lg font-bold text-base-900">
-            <DollarSign className="h-5 w-5 text-primary-600" />
+        <section className="rounded-2xl border border-base-200 bg-white p-6 shadow-sm dark:bg-[#111C2E] dark:border-[#24344D] dark:shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-all duration-200">
+          <div className="mb-4 flex items-center gap-2 border-b border-base-100 dark:border-[#24344D] pb-2 text-lg font-bold text-base-900 dark:text-[#F8FAFC] dark:text-[#F8FAFC]">
+            <DollarSign className="h-5 w-5 text-primary-600 dark:text-[#1685FF]" />
             Valores
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Preço de Venda</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Preço de Venda</label>
               <Input name="salePrice" type="number" placeholder="R$ 0,00" defaultValue={initialData?.salePrice} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Valor do Aluguel</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Valor do Aluguel</label>
               <Input name="rentPrice" type="number" placeholder="R$ 0,00" defaultValue={initialData?.rentPrice} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Condomínio</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Condomínio</label>
               <Input name="condoFee" type="number" placeholder="R$ 0,00" defaultValue={initialData?.condoFee} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">IPTU (Anual)</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">IPTU (Anual)</label>
               <Input name="iptu" type="number" placeholder="R$ 0,00" defaultValue={initialData?.iptu} />
             </div>
           </div>
         </section>
 
         {/* 3. Endereço */}
-        <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2 border-b border-base-100 pb-2 text-lg font-bold text-base-900">
-            <MapPin className="h-5 w-5 text-primary-600" />
+        <section className="rounded-2xl border border-base-200 bg-white p-6 shadow-sm dark:bg-[#111C2E] dark:border-[#24344D] dark:shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-all duration-200">
+          <div className="mb-4 flex items-center gap-2 border-b border-base-100 dark:border-[#24344D] pb-2 text-lg font-bold text-base-900 dark:text-[#F8FAFC] dark:text-[#F8FAFC]">
+            <MapPin className="h-5 w-5 text-primary-600 dark:text-[#1685FF]" />
             Endereço
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
             <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-base-700">CEP</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">CEP</label>
               <Input name="zipCode" placeholder="00000-000" defaultValue={initialData?.address?.zipCode} />
             </div>
             <div className="space-y-1.5 sm:col-span-4">
-              <label className="text-sm font-medium text-base-700">Rua/Avenida</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Rua/Avenida</label>
               <Input name="street" placeholder="Nome da rua" defaultValue={initialData?.address?.street} />
             </div>
             <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-base-700">Número</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Número</label>
               <Input name="number" placeholder="123" defaultValue={initialData?.address?.number} />
             </div>
             <div className="space-y-1.5 sm:col-span-4">
-              <label className="text-sm font-medium text-base-700">Complemento</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Complemento</label>
               <Input name="complement" placeholder="Apt, Bloco, etc." defaultValue={initialData?.address?.complement} />
             </div>
             <div className="space-y-1.5 sm:col-span-3">
-              <label className="text-sm font-medium text-base-700">Bairro *</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Bairro *</label>
               <Input name="neighborhood" required placeholder="Bairro" defaultValue={initialData?.address?.neighborhood} />
             </div>
             <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-base-700">Cidade *</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Cidade *</label>
               <Input name="city" required placeholder="Cidade" defaultValue={initialData?.address?.city} />
             </div>
             <div className="space-y-1.5 sm:col-span-1">
-              <label className="text-sm font-medium text-base-700">UF</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">UF</label>
               <Input name="state" placeholder="UF" defaultValue={initialData?.address?.state} />
             </div>
           </div>
         </section>
 
         {/* 4. Características e Diferenciais */}
-        <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center justify-between border-b border-base-100 pb-2">
-            <div className="flex items-center gap-2 text-lg font-bold text-base-900">
-              <List className="h-5 w-5 text-primary-600" />
+        <section className="rounded-2xl border border-base-200 bg-white p-6 shadow-sm dark:bg-[#111C2E] dark:border-[#24344D] dark:shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-all duration-200">
+          <div className="mb-4 flex items-center justify-between border-b border-base-100 dark:border-[#24344D] pb-2">
+            <div className="flex items-center gap-2 text-lg font-bold text-base-900 dark:text-[#F8FAFC]">
+              <List className="h-5 w-5 text-primary-600 dark:text-[#1685FF]" />
               Características e Diferenciais
             </div>
           </div>
-          
+
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm font-medium text-base-900">Características Básicas</p>
-            <Button type="button" variant="ghost" size="sm" onClick={() => setShowNewFeature(!showNewFeature)} className="text-primary-600 h-8">
+            <p className="text-sm font-medium text-base-900 dark:text-[#CBD5E1]">Características Básicas</p>
+            <Button type="button" variant="ghost" size="sm" onClick={() => setShowNewFeature(!showNewFeature)} className="text-primary-600 dark:text-[#1685FF] h-8">
               <Plus className="mr-1 h-4 w-4" /> Adicionar característica
             </Button>
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-6">
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-base-700">Área Útil (m²)</label>
+              <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6]">Área Útil (m²)</label>
               <Input name="builtArea" type="number" placeholder="0" defaultValue={initialData?.features?.builtArea} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-base-700">Quartos</label>
+              <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6]">Quartos</label>
               <Input name="bedrooms" type="number" placeholder="0" defaultValue={initialData?.features?.bedrooms} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-base-700">Suítes</label>
+              <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6]">Suítes</label>
               <Input name="suites" type="number" placeholder="0" defaultValue={initialData?.features?.suites} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-base-700">Vagas</label>
+              <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6]">Vagas</label>
               <Input name="parkingSpaces" type="number" placeholder="0" defaultValue={initialData?.features?.parkingSpaces} />
             </div>
             {customFeatures.map((feat, idx) => (
               <div key={idx} className="space-y-1.5 relative group">
-                <label className="text-xs font-medium text-base-700 flex items-center justify-between">
+                <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6] flex items-center justify-between">
                   {feat.name}
                   <button type="button" onClick={() => handleRemoveFeature(idx)} className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" title="Excluir">
                     <Trash2 className="h-3 w-3" />
                   </button>
                 </label>
-                <Input type="text" readOnly value={feat.value} className="bg-base-50 text-base-600" />
+                <Input type="text" readOnly value={feat.value} className="bg-base-50 text-base-600 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#F8FAFC]" />
               </div>
             ))}
           </div>
 
           {showNewFeature && (
-            <div className="mb-6 flex flex-col sm:flex-row items-end gap-3 rounded-lg border border-base-200 bg-base-50 p-4">
+            <div className="mb-6 flex flex-col sm:flex-row items-end gap-3 rounded-lg border border-base-200 bg-base-50 p-4 dark:bg-[#0B1320] dark:border-[#334155]">
               <div className="flex-1 w-full space-y-1.5">
-                <label className="text-xs font-medium text-base-700">Nome (ex: Banheiros, Andar)</label>
+                <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6]">Nome (ex: Banheiros, Andar)</label>
                 <Input value={newFeatureName} onChange={e => setNewFeatureName(e.target.value)} placeholder="Nome" />
               </div>
               <div className="flex-1 w-full space-y-1.5">
-                <label className="text-xs font-medium text-base-700">Valor (ex: 3, 8º andar)</label>
+                <label className="text-xs font-medium text-base-700 dark:text-[#B7C2D6]">Valor (ex: 3, 8º andar)</label>
                 <Input value={newFeatureValue} onChange={e => setNewFeatureValue(e.target.value)} placeholder="Valor" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())} />
               </div>
               <div className="flex gap-2 w-full sm:w-auto">
@@ -411,14 +411,14 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-base-900">Diferenciais</p>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setShowNewAmenity(!showNewAmenity)} className="text-primary-600 h-8">
+              <p className="text-sm font-medium text-base-900 dark:text-[#CBD5E1]">Diferenciais</p>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setShowNewAmenity(!showNewAmenity)} className="text-primary-600 dark:text-[#1685FF] h-8">
                 <Plus className="mr-1 h-4 w-4" /> Personalizar diferenciais
               </Button>
             </div>
-            
+
             {showNewAmenity && (
-              <div className="flex flex-col sm:flex-row items-center gap-3 rounded-lg border border-base-200 bg-base-50 p-4 mb-4">
+              <div className="flex flex-col sm:flex-row items-center gap-3 rounded-lg border border-base-200 bg-base-50 p-4 dark:bg-[#0B1320] dark:border-[#334155] mb-4">
                 <Input className="flex-1" value={newAmenityName} onChange={e => setNewAmenityName(e.target.value)} placeholder="Nome do diferencial (ex: Energia Solar)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddAmenity())} />
                 <div className="flex gap-2 w-full sm:w-auto">
                   <Button type="button" variant="outline" onClick={() => setShowNewAmenity(false)} className="flex-1 sm:flex-none">Cancelar</Button>
@@ -441,20 +441,20 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
                   if (item === 'Aceita animais' && initialData.amenities.allowsPets) isChecked = true
                 }
                 return (
-                  <label key={item} className="flex cursor-pointer items-center gap-2 rounded-full border border-base-200 bg-base-50 px-3 py-1.5 text-sm hover:bg-base-100">
-                    <input name={`amenity_${item}`} type="checkbox" defaultChecked={isChecked} className="rounded border-base-300 text-primary-600 focus:ring-primary-500" />
+                  <label key={item} className="flex cursor-pointer items-center gap-2 rounded-full border border-base-200 bg-base-50 px-3 py-1.5 text-sm hover:bg-base-100 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#CBD5E1] dark:hover:bg-[#111C2E] transition-all has-[:checked]:dark:bg-[rgba(22,133,255,0.10)] has-[:checked]:dark:border-[#1685FF]">
+                    <input name={`amenity_${item}`} type="checkbox" defaultChecked={isChecked} className="rounded border-base-300 text-primary-600 dark:text-[#1685FF] focus:ring-primary-500" />
                     {item}
                   </label>
                 )
               })}
-              
+
               {customAmenities.map(item => (
-                <div key={item} className="flex items-center rounded-full border border-base-200 bg-base-50 pl-3 pr-1 py-1 text-sm hover:bg-base-100">
+                <div key={item} className="flex items-center rounded-full border border-base-200 bg-base-50 pl-3 pr-1 py-1 text-sm hover:bg-base-100 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#CBD5E1] dark:hover:bg-[#111C2E] transition-all has-[:checked]:dark:bg-[rgba(22,133,255,0.10)] has-[:checked]:dark:border-[#1685FF]">
                   <label className="flex cursor-pointer items-center gap-2 mr-2">
-                    <input name={`custom_amenity_${item}`} type="checkbox" defaultChecked={true} className="rounded border-base-300 text-primary-600 focus:ring-primary-500" />
+                    <input name={`custom_amenity_${item}`} type="checkbox" defaultChecked={true} className="rounded border-base-300 text-primary-600 dark:text-[#1685FF] focus:ring-primary-500" />
                     {item}
                   </label>
-                  <button type="button" onClick={() => handleRemoveAmenity(item)} className="p-1 text-base-400 hover:text-red-500 rounded-full hover:bg-base-200 transition-colors" title="Excluir diferencial">
+                  <button type="button" onClick={() => handleRemoveAmenity(item)} className="p-1 text-base-400 dark:text-[#64748B] hover:text-red-500 rounded-full hover:bg-base-200 transition-colors" title="Excluir diferencial">
                     <X className="h-3 w-3" />
                   </button>
                 </div>
@@ -464,15 +464,15 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
         </section>
 
         {/* 5. Fotos e Vídeos */}
-        <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2 border-b border-base-100 pb-2 text-lg font-bold text-base-900">
-            <ImageIcon className="h-5 w-5 text-primary-600" />
+        <section className="rounded-2xl border border-base-200 bg-white p-6 shadow-sm dark:bg-[#111C2E] dark:border-[#24344D] dark:shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-all duration-200">
+          <div className="mb-4 flex items-center gap-2 border-b border-base-100 dark:border-[#24344D] pb-2 text-lg font-bold text-base-900 dark:text-[#F8FAFC] dark:text-[#F8FAFC]">
+            <ImageIcon className="h-5 w-5 text-primary-600 dark:text-[#1685FF]" />
             Mídias do Imóvel
           </div>
-          
+
           <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-5">
             {photos.map(photo => (
-              <div key={photo.id} className="group relative aspect-square overflow-hidden rounded-md border border-base-200">
+              <div key={photo.id} className="group relative aspect-square overflow-hidden rounded-md border border-base-200 dark:border-[#334155] dark:bg-[#0B1320]">
                 <img src={photo.url} alt="Foto" className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2">
                   <p className="text-white text-xs truncate w-full text-center mb-2">{photo.name || 'Foto'}</p>
@@ -482,9 +482,9 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
                 </div>
               </div>
             ))}
-            
+
             {videos.map(video => (
-              <div key={video.id} className="group relative aspect-square overflow-hidden rounded-md border border-base-200 bg-base-100 flex items-center justify-center">
+              <div key={video.id} className="group relative aspect-square overflow-hidden rounded-md border border-base-200 dark:border-[#334155] dark:bg-[#0B1320] bg-base-100 flex items-center justify-center">
                 <video src={video.url} className="absolute inset-0 h-full w-full object-cover opacity-50" />
                 <FileVideo className="h-8 w-8 text-base-500 z-10" />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 z-20">
@@ -497,51 +497,51 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
             ))}
           </div>
 
-          <div 
+          <div
             onDragOver={e => e.preventDefault()}
             onDrop={handleDrop}
-            className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-base-300 bg-base-50 px-6 py-10 text-center hover:bg-base-100 transition-colors cursor-pointer"
+            className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-base-300 bg-base-50 px-6 py-10 text-center hover:bg-base-100 transition-colors cursor-pointer dark:bg-[#0B1320] dark:border-[#334155] dark:hover:bg-[#111C2E]"
             onClick={() => fileInputRef.current?.click()}
           >
-            <ImageIcon className="mx-auto h-12 w-12 text-base-400" />
-            <p className="mt-4 text-sm font-medium text-base-900">Arraste fotos e vídeos ou clique para enviar</p>
-            <p className="mt-1 text-xs text-base-500">Imagens (JPG, PNG, WEBP) até 10MB • Vídeos (MP4, WEBM) até 20MB</p>
-            <input 
-              type="file" 
-              multiple 
+            <ImageIcon className="mx-auto h-12 w-12 text-base-400 dark:text-[#64748B]" />
+            <p className="mt-4 text-sm font-medium text-base-900 dark:text-[#CBD5E1] dark:text-[#CBD5E1]">Arraste fotos e vídeos ou clique para enviar</p>
+            <p className="mt-1 text-xs text-base-500 dark:text-[#7F8EA3]">Imagens (JPG, PNG, WEBP) até 10MB • Vídeos (MP4, WEBM) até 20MB</p>
+            <input
+              type="file"
+              multiple
               accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
-              className="hidden" 
+              className="hidden"
               ref={fileInputRef}
               onChange={handleFileSelect}
             />
-            <Button variant="outline" className="mt-4" type="button" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}>
+            <Button variant="outline" className="mt-4 dark:bg-[#1685FF] dark:text-white dark:border-[#1685FF] dark:hover:bg-[#0F6EEB] dark:hover:border-[#0F6EEB] transition-all" type="button" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}>
               Selecionar Arquivos
             </Button>
           </div>
         </section>
 
         {/* 6. Descrição & Publicação */}
-        <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-base-200 bg-white p-6 shadow-sm dark:bg-[#111C2E] dark:border-[#24344D] dark:shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-all duration-200">
           <div className="space-y-6">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Descrição do Imóvel</label>
-              <textarea 
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Descrição do Imóvel</label>
+              <textarea
                 name="description"
-                rows={5} 
-                className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                rows={5}
+                className="w-full rounded-xl border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all duration-200 dark:bg-[#0B1320] dark:border-[#334155] dark:text-[#F8FAFC] dark:focus:border-[#1685FF] dark:focus:ring-[rgba(22,133,255,0.15)]"
                 placeholder="Descreva os detalhes que fazem este imóvel ser único..."
                 defaultValue={initialData?.description}
               />
             </div>
-            
+
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-base-700">Proprietário vinculado</label>
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Proprietário vinculado</label>
               <div className="flex gap-2 flex-col sm:flex-row">
-                <Input 
-                  name="ownerName" 
-                  list="owners-list" 
-                  placeholder="Nome do proprietário" 
-                  defaultValue={initialData?.ownerName || (initialData?.ownerId ? 'Carlos Ferreira' : '')} 
+                <Input
+                  name="ownerName"
+                  list="owners-list"
+                  placeholder="Nome do proprietário"
+                  defaultValue={initialData?.ownerName || (initialData?.ownerId ? 'Carlos Ferreira' : '')}
                   className="flex-1"
                 />
                 <datalist id="owners-list">
@@ -555,40 +555,42 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
             </div>
 
             <div className="flex items-start gap-3 p-2">
-              <input name="showOwnerName" type="checkbox" id="showOwnerName" defaultChecked={initialData?.showOwnerName} className="mt-1 h-4 w-4 rounded border-primary-300 text-primary-600 focus:ring-primary-500" />
+              <input name="showOwnerName" type="checkbox" id="showOwnerName" defaultChecked={initialData?.showOwnerName} className="mt-1 h-4 w-4 rounded border-primary-300 text-primary-600 dark:text-[#1685FF] focus:ring-primary-500" />
               <div>
-                <label htmlFor="showOwnerName" className="font-medium text-base-900 cursor-pointer">Exibir nome do proprietário no imóvel</label>
-                <p className="text-sm text-base-500">Se marcado, o nome ficará visível aos clientes (não confunda com a publicação do imóvel).</p>
+                <label htmlFor="showOwnerName" className="font-medium text-base-900 dark:text-[#F8FAFC] cursor-pointer">Exibir nome do proprietário no imóvel</label>
+                <p className="text-sm text-base-500 dark:text-[#94A3B8]">Se marcado, o nome ficará visível aos clientes (não confunda com a publicação do imóvel).</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-lg border border-primary-100 bg-primary-50 p-4">
-              <input name="isPublished" type="checkbox" id="publish" defaultChecked={initialData?.isPublished} className="mt-1 h-4 w-4 rounded border-primary-300 text-primary-600 focus:ring-primary-500" />
+            <div className="flex items-start gap-3 rounded-lg border border-primary-100 bg-primary-50 dark:bg-[rgba(22,133,255,0.10)] dark:border-[rgba(22,133,255,0.30)] p-4">
+              <input name="isPublished" type="checkbox" id="publish" defaultChecked={initialData?.isPublished} className="mt-1 h-4 w-4 rounded border-primary-300 text-primary-600 dark:text-[#1685FF] focus:ring-primary-500" />
               <div>
-                <label htmlFor="publish" className="font-medium text-primary-900 cursor-pointer">Publicar no Portal Público</label>
-                <p className="text-sm text-primary-700">Ao marcar esta opção, o imóvel ficará visível para os clientes no seu site.</p>
+                <label htmlFor="publish" className="font-medium text-primary-900 dark:text-[#60A5FA] cursor-pointer">Publicar no Portal Público</label>
+                <p className="text-sm text-primary-700 dark:text-[#B7C2D6]">Ao marcar esta opção, o imóvel ficará visível para os clientes no seu site.</p>
               </div>
             </div>
           </div>
         </section>
-        
+
         {/* Bottom Actions (Desktop & Tablet) */}
         <div className="hidden lg:flex justify-end gap-3 pt-4">
-          <Button type="button" variant="outline" asChild>
+          {/* Cancel Button in desktop */}
+          <Button type="button" variant="outline" className="dark:bg-transparent dark:border-[#64748B] dark:text-[#F8FAFC] dark:hover:bg-[#1E293B] transition-all" asChild>
+
             <Link to="/imoveis">Cancelar</Link>
           </Button>
-          <Button type="submit" size="lg" className="px-8">
+          <Button type="submit" size="lg" className="px-8 dark:bg-[#2563EB] dark:hover:bg-[#1D4ED8] dark:text-white dark:shadow-[0_0_14px_rgba(37,99,235,0.20)] transition-all">
             {isEditMode ? 'Salvar Alterações' : 'Salvar Imóvel'}
           </Button>
         </div>
 
         {/* Mobile Sticky Footer */}
-        <div className="fixed bottom-0 left-0 right-0 border-t border-base-200 bg-white p-4 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] lg:hidden z-40">
+        <div className="fixed bottom-0 left-0 right-0 border-t border-base-200 bg-white p-4 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] lg:hidden z-40 dark:bg-[#111C2E] dark:border-[#24344D]">
           <div className="flex gap-2">
-            <Button type="button" variant="outline" className="flex-1" asChild>
+            <Button type="button" variant="outline" className="flex-1 dark:bg-transparent dark:border-[#64748B] dark:text-[#F8FAFC] dark:hover:bg-[#1E293B] transition-all" asChild>
               <Link to="/imoveis">Cancelar</Link>
             </Button>
-            <Button type="submit" className="flex-1">{isEditMode ? 'Salvar Alterações' : 'Salvar Imóvel'}</Button>
+            <Button type="submit" className="flex-1 dark:bg-[#2563EB] dark:hover:bg-[#1D4ED8] dark:text-white dark:shadow-[0_0_14px_rgba(37,99,235,0.20)] transition-all">{isEditMode ? 'Salvar Alterações' : 'Salvar Imóvel'}</Button>
           </div>
         </div>
 

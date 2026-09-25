@@ -31,7 +31,7 @@ export function OwnerCreate() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        
+
         {/* 1. Informações principais */}
         <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-2 border-b border-base-100 pb-2 text-lg font-bold text-base-900">
@@ -83,8 +83,8 @@ export function OwnerCreate() {
             Observações
           </div>
           <div className="space-y-1.5">
-            <textarea 
-              rows={4} 
+            <textarea
+              rows={4}
               className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               placeholder="Anotações sobre o cliente, preferências, restrições de horário, etc."
             />

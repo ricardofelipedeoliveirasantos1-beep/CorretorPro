@@ -7,7 +7,7 @@ import { mockOwners } from '../../../mocks/mockOwners'
 export function OwnerEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
-  
+
   const owner = mockOwners.find(o => o.id === id) || mockOwners[0]
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -52,17 +52,17 @@ export interface Property {
   purpose: PropertyPurpose
   type: PropertyType
   status: PropertyStatus
-  
+
   // Valores
   salePrice?: number
   rentPrice?: number
   condoFee?: number
   iptu?: number
-  
+
   address: PropertyAddress
   features: PropertyFeatures
   amenities: PropertyAmenities
-  
+
   description: string
   ownerId: string
   ownerName?: string // To hold the typed name if it's not a known ID
@@ -70,7 +70,7 @@ export interface Property {
 
   photos: PropertyPhoto[]
   videos?: { id: string; url: string; name?: string }[]
-  
+
   isPublished: boolean
   createdAt: string
   updatedAt: string

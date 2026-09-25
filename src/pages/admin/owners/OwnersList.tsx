@@ -27,9 +27,9 @@ export function OwnersList() {
       <div className="flex max-w-md">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-base-400" />
-          <Input 
-            type="text" 
-            placeholder="Buscar por nome, email ou telefone..." 
+          <Input
+            type="text"
+            placeholder="Buscar por nome, email ou telefone..."
             className="pl-10 w-full"
           />
         </div>

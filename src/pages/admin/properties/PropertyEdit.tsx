@@ -4,7 +4,7 @@ import { mockProperties } from '../../../mocks/mockProperties'
 
 export function PropertyEdit() {
   const { id } = useParams()
-  
+
   const property = mockProperties.find(p => p.id === id)
 
   if (!property) {

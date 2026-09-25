@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
@@ -18,6 +19,9 @@
 
 @layer base {
   html, body {
-    @apply antialiased text-base-900 bg-base-50;
+    @apply antialiased text-base-900 bg-base-50 transition-colors duration-300;
+  }
+  .dark body {
+    @apply bg-[#0B1320] text-slate-100;
   }
 }

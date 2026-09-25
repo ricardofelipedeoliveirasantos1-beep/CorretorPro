@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         last_name: 'Demo'
       }
     }
-    
+
     const fakeSession = {
       access_token: 'demo-token-123',
       user: fakeUser

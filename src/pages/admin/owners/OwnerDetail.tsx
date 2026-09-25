@@ -37,7 +37,7 @@ export function OwnerDetail() {
             </div>
             <h2 className="text-xl font-bold text-base-900">{owner.firstName} {owner.lastName}</h2>
             <p className="text-sm text-base-500 mb-6">Cliente desde {new Date(owner.createdAt).toLocaleDateString('pt-BR')}</p>
-            
+
             <div className="space-y-4 text-left">
               <div className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-base-400 shrink-0 mt-0.5" />
@@ -113,7 +113,7 @@ export function OwnerDetail() {
                 </div>
               )
             })}
-            
+
             {properties.length === 0 && (
               <div className="rounded-xl border border-dashed border-base-300 bg-base-50 p-8 text-center">
                 <p className="text-sm text-base-500">Este proprietário ainda não possui imóveis cadastrados.</p>
