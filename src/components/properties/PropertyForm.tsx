@@ -5,6 +5,7 @@ import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { type Property } from '../../types/property'
 import { updateMockProperty, createMockProperty } from '../../mocks/mockProperties'
+import { InlineFeedback, type FeedbackType } from '../ui/InlineFeedback'
 
 interface PropertyFormProps {
   initialData?: Property
@@ -28,6 +29,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
   const [videos, setVideos] = useState<any[]>([])
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [feedback, setFeedback] = useState<{ type: FeedbackType; message: string; visible: boolean }>({ type: 'success', message: '', visible: false })
 
   const handleOpenMap = () => {
     const form = document.getElementById('property-form') as HTMLFormElement
@@ -41,7 +43,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
     const queryParts = [street, number, neighborhood, city, state].filter(Boolean)
 
     if (queryParts.length < 2) {
-      alert("Não há dados de endereço suficientes para abrir o mapa. Preencha pelo menos a rua e cidade.")
+      setFeedback({ type: 'warning', message: 'Não há dados de endereço suficientes para abrir o mapa. Preencha pelo menos a rua e cidade.', visible: true })
       return
     }
 
@@ -89,7 +91,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
     files.forEach(file => {
       if (file.type.startsWith('image/')) {
         if (file.size > 10 * 1024 * 1024) {
-           alert(`A imagem ${file.name} tem mais de 10MB e foi bloqueada.`)
+           setFeedback({ type: 'error', message: `A imagem ${file.name} tem mais de 10MB e foi bloqueada.`, visible: true })
            return
         }
         const newPhoto = {
@@ -104,7 +106,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
         setPhotos(prev => [...prev, newPhoto])
       } else if (file.type.startsWith('video/')) {
         if (file.size > 20 * 1024 * 1024) {
-           alert(`O vídeo ${file.name} tem mais de 20MB e foi bloqueado.`)
+           setFeedback({ type: 'error', message: `O vídeo ${file.name} tem mais de 20MB e foi bloqueado.`, visible: true })
            return
         }
         const newVideo = {
@@ -116,7 +118,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
         }
         setVideos(prev => [...prev, newVideo])
       } else {
-         alert(`O formato do arquivo ${file.name} não é aceito. Apenas imagens (JPG, PNG, WEBP) e vídeos (MP4, WEBM).`)
+         setFeedback({ type: 'error', message: `O formato do arquivo ${file.name} não é aceito. Apenas imagens (JPG, PNG, WEBP) e vídeos (MP4, WEBM).`, visible: true })
       }
     })
   }
@@ -156,6 +158,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
         city: formData.get('city') as string,
         state: formData.get('state') as string,
       },
+      mapsUrl: formData.get('mapsUrl') as string,
       features: {
         builtArea: Number(formData.get('builtArea')) || 0,
         totalArea: Number(formData.get('totalArea')) || 0,
@@ -188,7 +191,7 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
 
     if (isEditMode && initialData?.id) {
       updateMockProperty(initialData.id, updatedData)
-      alert('Imóvel atualizado com sucesso! (Persistência temporária no Mock)')
+      setFeedback({ type: 'success', message: 'Imóvel atualizado com sucesso!', visible: true })
     } else {
       createMockProperty({
         id: `prop-${Math.random().toString(36).substr(2, 9)}`,
@@ -197,9 +200,11 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
         ownerId: 'owner-temp', // Fallback for mock
         ...updatedData
       } as Property)
-      alert('Imóvel salvo com sucesso! (Persistência temporária no Mock)')
+      setFeedback({ type: 'success', message: 'Imóvel salvo com sucesso!', visible: true })
     }
-    navigate('/imoveis')
+    setTimeout(() => {
+      navigate('/imoveis')
+    }, 1000)
   }
 
   const amenitiesList = ['Piscina', 'Varanda', 'Elevador', 'Academia', 'Área gourmet', 'Portaria', 'Mobiliado', 'Aceita animais']
@@ -231,6 +236,14 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
           <Button type="submit" form="property-form">{isEditMode ? 'Salvar Alterações' : 'Salvar Imóvel'}</Button>
         </div>
       </div>
+
+      <InlineFeedback
+        type={feedback.type}
+        message={feedback.message}
+        visible={feedback.visible}
+        duration={feedback.type === 'success' ? 1000 : 3000}
+        onClose={() => setFeedback(prev => ({ ...prev, visible: false }))}
+      />
 
       <form id="property-form" onSubmit={handleSubmit} className="space-y-8">
 
@@ -342,6 +355,10 @@ export function PropertyForm({ initialData, isEditMode = false }: PropertyFormPr
             <div className="space-y-1.5 sm:col-span-1">
               <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">UF</label>
               <Input name="state" placeholder="UF" defaultValue={initialData?.address?.state} />
+            </div>
+            <div className="space-y-1.5 sm:col-span-full">
+              <label className="text-sm font-medium text-base-700 dark:text-[#B7C2D6]">Link do Google Maps</label>
+              <Input name="mapsUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={initialData?.mapsUrl} />
             </div>
           </div>
         </section>

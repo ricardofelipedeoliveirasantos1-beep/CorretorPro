@@ -2,12 +2,15 @@ import { type Owner } from '../../types/owner'
 import { Edit, Eye, MessageCircle } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Link } from 'react-router-dom'
+import { InlineFeedback } from '../ui/InlineFeedback'
+import { useState } from 'react'
 
 interface OwnerTableProps {
   owners: Owner[]
 }
 
 export function OwnerTable({ owners }: OwnerTableProps) {
+  const [wppFeedback, setWppFeedback] = useState<string | null>(null)
   return (
     <div className="overflow-x-auto rounded-xl border border-base-200 bg-white shadow-sm">
       <table className="w-full text-left text-sm">
@@ -43,13 +46,28 @@ export function OwnerTable({ owners }: OwnerTableProps) {
                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Visualizar" asChild>
                     <Link to={`/proprietarios/${owner.id}`}><Eye className="h-4 w-4" /></Link>
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="WhatsApp" onClick={() => alert('Mock WhatsApp')}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    title="WhatsApp"
+                    onClick={() => {
+                      setWppFeedback(owner.id)
+                      setTimeout(() => setWppFeedback(null), 1500)
+                    }}
+                  >
                     <MessageCircle className="h-4 w-4 text-green-600" />
                   </Button>
                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Editar" asChild>
                     <Link to={`/proprietarios/${owner.id}/editar`}><Edit className="h-4 w-4" /></Link>
                   </Button>
                 </div>
+                <InlineFeedback
+                  type="info"
+                  message="WhatsApp (Mock)."
+                  visible={wppFeedback === owner.id}
+                  className="mt-2 absolute right-8 z-10 w-auto"
+                />
               </td>
             </tr>
           ))}

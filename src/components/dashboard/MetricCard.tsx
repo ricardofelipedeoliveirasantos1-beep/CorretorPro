@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { cn } from '../../utils/cn'
 
 interface MetricCardProps {
@@ -12,28 +13,32 @@ interface MetricCardProps {
 
 const colorStyles = {
   blue: {
-    border: 'border-[#1685FF] dark:shadow-[0_0_18px_rgba(22,133,255,0.15)]',
-    iconBgLight: 'bg-[#EAF3FF]',
-    iconBgDark: 'dark:bg-[rgba(22,133,255,0.18)]',
-    iconText: 'text-[#1685FF]',
+    border: 'border-[#1992FF] dark:border-[rgba(25,146,255,0.6)]',
+    iconBgLight: 'bg-[#EFF6FF]',
+    iconBgDark: 'dark:bg-[rgba(25,146,255,0.15)]',
+    iconText: 'text-[#1992FF]',
+    shadowDark: 'dark:shadow-[0_6px_20px_rgba(0,0,0,0.28),0_0_16px_rgba(25,146,255,0.12)]',
   },
   purple: {
-    border: 'border-[#A855F7] dark:shadow-[0_0_18px_rgba(168,85,247,0.15)]',
-    iconBgLight: 'bg-[#F3E8FF]',
-    iconBgDark: 'dark:bg-[rgba(168,85,247,0.18)]',
-    iconText: 'text-[#A855F7]',
+    border: 'border-[#B05CFF] dark:border-[rgba(176,92,255,0.6)]',
+    iconBgLight: 'bg-[#FAF5FF]',
+    iconBgDark: 'dark:bg-[rgba(176,92,255,0.15)]',
+    iconText: 'text-[#B05CFF]',
+    shadowDark: 'dark:shadow-[0_6px_20px_rgba(0,0,0,0.28),0_0_16px_rgba(176,92,255,0.12)]',
   },
   green: {
-    border: 'border-[#10B981] dark:shadow-[0_0_18px_rgba(16,185,129,0.15)]',
-    iconBgLight: 'bg-[#D1FAE5]',
-    iconBgDark: 'dark:bg-[rgba(16,185,129,0.18)]',
-    iconText: 'text-[#10B981]',
+    border: 'border-[#00D1B2] dark:border-[rgba(0,209,178,0.6)]',
+    iconBgLight: 'bg-[#F0FDFA]',
+    iconBgDark: 'dark:bg-[rgba(0,209,178,0.15)]',
+    iconText: 'text-[#00D1B2]',
+    shadowDark: 'dark:shadow-[0_6px_20px_rgba(0,0,0,0.28),0_0_16px_rgba(0,209,178,0.12)]',
   },
   orange: {
-    border: 'border-[#F59E0B] dark:shadow-[0_0_18px_rgba(245,158,11,0.15)]',
-    iconBgLight: 'bg-[#FEF3C7]',
-    iconBgDark: 'dark:bg-[rgba(245,158,11,0.18)]',
-    iconText: 'text-[#F59E0B]',
+    border: 'border-[#FFB020] dark:border-[rgba(255,176,32,0.6)]',
+    iconBgLight: 'bg-[#FFFBEB]',
+    iconBgDark: 'dark:bg-[rgba(255,176,32,0.15)]',
+    iconText: 'text-[#FFB020]',
+    shadowDark: 'dark:shadow-[0_6px_20px_rgba(0,0,0,0.28),0_0_16px_rgba(255,176,32,0.12)]',
   }
 }
 
@@ -41,42 +46,70 @@ export function MetricCard({
   title,
   value,
   indicator,
-  indicatorColor,
   icon,
   colorClass
 }: MetricCardProps) {
   const styles = colorStyles[colorClass]
 
+  const isPositive = indicator.includes('+')
+  const isNegative = indicator.includes('-')
+  const cleanText = indicator.replace(/[↑↓]/g, '').trim()
+
+  let TrendIcon = Minus
+  let trendColor = 'text-[#475569] dark:text-[#CBD5E1]'
+
+  if (isPositive) {
+    TrendIcon = TrendingUp
+    trendColor = 'text-[#10B981]'
+  } else if (isNegative) {
+    TrendIcon = TrendingDown
+    trendColor = 'text-[#EF4444]'
+  }
+
   return (
     <div className={cn(
-      'flex flex-col justify-between rounded-[14px] md:rounded-[16px] bg-white p-[18px] md:p-[28px] border-[1.5px] transition-colors duration-300',
-      'shadow-[0_6px_18px_rgba(15,23,42,0.05)] dark:shadow-none',
-      'dark:bg-[#111C2E] dark:bg-gradient-to-br dark:from-[#111C2E] dark:to-[#0D1727]',
-      styles.border
+      'relative flex flex-col',
+      'rounded-[16px] lg:rounded-[20px] p-[14px] lg:p-[18px]',
+      'h-[105px] sm:h-[114px] lg:h-[120px]',
+      'bg-[#FFFFFF] dark:bg-[#0B1B30]',
+      'border border-solid transition-all duration-200 ease-in-out',
+      'shadow-[0_4px_14px_rgba(15,23,42,0.08)] hover:-translate-y-[2px]',
+      styles.border,
+      styles.shadowDark
     )}>
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col">
-          <span className="text-[14px] md:text-sm font-medium text-[#475569] dark:text-[#B7C2D6]">
-            {title}
-          </span>
-          <span className="text-[30px] sm:text-[32px] md:text-[36px] lg:text-[42px] font-bold text-[#0F172A] dark:text-[#F8FAFC] mt-2 md:mt-4">
-            {value}
-          </span>
-          <span
-            className="text-[12px] md:text-sm font-medium mt-1 md:mt-2"
-            style={{ color: indicatorColor }}
-          >
-            {indicator}
-          </span>
+      {/* Title */}
+      <span className="text-[14.5px] sm:text-[15px] lg:text-[15.5px] font-semibold text-[#0F172A] dark:text-[#F8FAFC] z-10">
+        {title}
+      </span>
+
+      {/* Icon */}
+      <div className={cn(
+        'absolute top-[14px] right-[14px] lg:top-[16px] lg:right-[16px]',
+        'flex items-center justify-center rounded-[10px] lg:rounded-[12px] shrink-0',
+        'h-[34px] w-[34px] sm:h-[38px] sm:w-[38px] lg:h-[40px] lg:w-[40px]',
+        styles.iconBgLight,
+        styles.iconBgDark,
+        styles.iconText,
+        'z-10'
+      )}>
+        <div className="[&>svg]:w-[18px] [&>svg]:h-[18px] lg:[&>svg]:w-[20px] lg:[&>svg]:h-[20px]">
+           {icon}
         </div>
-        <div className={cn(
-          'flex h-[44px] w-[44px] md:h-[56px] md:w-[56px] items-center justify-center rounded-[12px] md:rounded-[14px] shrink-0',
-          styles.iconBgLight,
-          styles.iconBgDark,
-          styles.iconText
-        )}>
-          {icon}
-        </div>
+      </div>
+
+      {/* Value */}
+      <div className="flex-1 flex flex-col items-center justify-center -mt-1 lg:-mt-2">
+        <span className="text-[34px] sm:text-[40px] lg:text-[46px] font-[800] leading-none text-[#0F172A] dark:text-[#F8FAFC]">
+          {value}
+        </span>
+      </div>
+
+      {/* Indicator */}
+      <div className="absolute bottom-[12px] lg:bottom-[14px] left-0 w-full flex items-center justify-center gap-[5px] lg:gap-[6px]">
+        <TrendIcon className={cn('h-[14px] w-[14px] lg:h-[16px] lg:w-[16px]', trendColor)} strokeWidth={2.5} />
+        <span className={cn('text-[12.5px] lg:text-[13.5px] font-semibold tracking-wide', trendColor)}>
+          {cleanText}
+        </span>
       </div>
     </div>
   )

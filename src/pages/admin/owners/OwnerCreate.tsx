@@ -2,14 +2,19 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, User, Phone, FileText } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/Input'
+import { InlineFeedback } from '../../../components/ui/InlineFeedback'
+import { useState } from 'react'
 
 export function OwnerCreate() {
   const navigate = useNavigate()
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Proprietário salvo com sucesso! (Mock)')
-    navigate('/proprietarios')
+    setShowSuccess(true)
+    setTimeout(() => {
+      navigate('/proprietarios')
+    }, 1000)
   }
 
   return (
@@ -29,6 +34,12 @@ export function OwnerCreate() {
           <Button onClick={handleSubmit}>Salvar Proprietário</Button>
         </div>
       </div>
+
+      <InlineFeedback
+        type="success"
+        message="Proprietário cadastrado com sucesso!"
+        visible={showSuccess}
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6">
 

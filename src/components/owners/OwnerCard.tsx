@@ -2,12 +2,15 @@ import { type Owner } from '../../types/owner'
 import { Phone, Mail } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Link } from 'react-router-dom'
+import { InlineFeedback } from '../ui/InlineFeedback'
+import { useState } from 'react'
 
 interface OwnerCardProps {
   owner: Owner
 }
 
 export function OwnerCard({ owner }: OwnerCardProps) {
+  const [wppFeedback, setWppFeedback] = useState(false)
   return (
     <div className="flex flex-col rounded-xl border border-base-200 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-start justify-between gap-2">
@@ -35,10 +38,24 @@ export function OwnerCard({ owner }: OwnerCardProps) {
         <Button variant="outline" size="sm" className="flex-1" asChild>
           <Link to={`/proprietarios/${owner.id}/editar`}>Editar</Link>
         </Button>
-        <Button variant="primary" size="sm" className="flex-1" onClick={() => alert('Mock: WhatsApp')}>
+        <Button
+          variant="primary"
+          size="sm"
+          className="flex-1"
+          onClick={() => {
+            setWppFeedback(true)
+            setTimeout(() => setWppFeedback(false), 1500)
+          }}
+        >
           WhatsApp
         </Button>
       </div>
+      <InlineFeedback
+        type="info"
+        message="WhatsApp aberto."
+        visible={wppFeedback}
+        className="mt-2"
+      />
     </div>
   )
 }

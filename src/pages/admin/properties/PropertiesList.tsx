@@ -57,7 +57,7 @@ export function PropertiesList() {
   // Resumo
   const total = mockProperties.length
   const available = mockProperties.filter(p => p.status === 'Disponível').length
-  const negotiating = mockProperties.filter(p => p.status === 'Em negociação').length
+  const negotiating = mockProperties.filter(p => p.status === 'Negociando').length
   const published = mockProperties.filter(p => p.isPublished).length
 
   return (
@@ -193,10 +193,10 @@ export function PropertiesList() {
               >
                 <option value="Todos">Todos</option>
                 <option value="Disponível">Disponível</option>
-                <option value="Reservado">Reservado</option>
-                <option value="Em negociação">Em negociação</option>
+
+                <option value="Negociando">Negociando</option>
                 <option value="Vendido">Vendido</option>
-                <option value="Alugado">Alugado</option>
+                <option value="Indisponível">Indisponível</option>
               </select>
             </div>
           </div>

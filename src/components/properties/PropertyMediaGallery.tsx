@@ -59,18 +59,18 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
   }
 
   return (
-    <div className="space-y-4">
+    <div className="h-full w-full">
       {/* Main Gallery Area */}
-      <div className="relative overflow-hidden rounded-xl bg-base-100 group">
+      <div className="relative h-full w-full group">
         <div
           ref={scrollContainerRef}
-          className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="flex h-full w-full snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           onScroll={handleScroll}
         >
           {sortedPhotos.map((photo, idx) => (
             <div
               key={photo.id}
-              className="min-w-full flex-none snap-center snap-always aspect-[4/3] md:aspect-[16/9]"
+              className="min-w-full h-full flex-none snap-center snap-always"
               onClick={() => {
                 setCurrentIndex(idx)
                 setIsViewerOpen(true)
@@ -122,13 +122,16 @@ export function PropertyMediaGallery({ photos, videos = [] }: PropertyMediaGalle
 
       {/* Videos Button */}
       {videos && videos.length > 0 && (
-        <div className="flex justify-center md:justify-start">
+        <div className="absolute top-4 right-4 z-10">
           <Button
             variant="outline"
-            className="w-full md:w-auto"
-            onClick={() => setIsVideoViewerOpen(true)}
+            className="bg-black/60 text-white border-white/20 hover:bg-black/80 backdrop-blur-sm shadow-lg"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsVideoViewerOpen(true);
+            }}
           >
-            <Play className="mr-2 h-4 w-4" />
+            <Play className="mr-2 h-4 w-4 text-[#168CFF]" />
             Ver vídeos ({videos.length})
           </Button>
         </div>

@@ -3,11 +3,19 @@ import { ArrowLeft, Edit, Trash2, Phone, Mail, FileText, HomeIcon } from 'lucide
 import { Button } from '../../../components/ui/Button'
 import { mockOwners } from '../../../mocks/mockOwners'
 import { mockProperties } from '../../../mocks/mockProperties'
+import { InlineFeedback } from '../../../components/ui/InlineFeedback'
+import { ConfirmDialog } from '../../../components/ui/ConfirmDialog'
+import { useState } from 'react'
 
 export function OwnerDetail() {
   const { id } = useParams()
   const owner = mockOwners.find(o => o.id === id) || mockOwners[0]
   const properties = mockProperties.filter(p => p.ownerId === owner.id)
+
+  const [showWpp, setShowWpp] = useState(false)
+  const [showCall, setShowCall] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false)
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-20 lg:pb-0">
@@ -62,9 +70,25 @@ export function OwnerDetail() {
               </div>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-base-100 flex gap-2">
-              <Button className="flex-1" onClick={() => alert('Mock WhatsApp')}>WhatsApp</Button>
-              <Button variant="outline" className="flex-1" onClick={() => alert('Mock Ligar')}>Ligar</Button>
+            <div className="mt-6 pt-6 border-t border-base-100 flex flex-col gap-3">
+              <div className="flex gap-2">
+                <Button className="flex-1" onClick={() => setShowWpp(true)}>WhatsApp</Button>
+                <Button variant="outline" className="flex-1" onClick={() => setShowCall(true)}>Ligar</Button>
+              </div>
+              <InlineFeedback
+                type="info"
+                message="WhatsApp aberto em nova janela (Mock)."
+                visible={showWpp}
+                duration={1500}
+                onClose={() => setShowWpp(false)}
+              />
+              <InlineFeedback
+                type="info"
+                message="Iniciando chamada (Mock)."
+                visible={showCall}
+                duration={1500}
+                onClose={() => setShowCall(false)}
+              />
             </div>
           </div>
 
@@ -73,7 +97,26 @@ export function OwnerDetail() {
             <p className="text-sm text-base-600 whitespace-pre-wrap">{owner.notes || 'Nenhuma observação registrada.'}</p>
           </div>
 
-          <Button variant="danger" className="w-full" onClick={() => alert('Mock Excluir')}><Trash2 className="mr-2 h-4 w-4"/> Excluir Proprietário</Button>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button variant="danger" className="w-full" onClick={() => setShowDeleteConfirm(true)}><Trash2 className="mr-2 h-4 w-4"/> Excluir Proprietário</Button>
+            <InlineFeedback
+              type="success"
+              message="Proprietário excluído com sucesso."
+              visible={showDeleteSuccess}
+              duration={1000}
+              onClose={() => setShowDeleteSuccess(false)}
+            />
+            <ConfirmDialog
+              isOpen={showDeleteConfirm}
+              title="Excluir Proprietário"
+              message="Tem certeza que deseja excluir este proprietário? Todos os imóveis vinculados também serão removidos."
+              onConfirm={() => {
+                setShowDeleteConfirm(false)
+                setShowDeleteSuccess(true)
+              }}
+              onCancel={() => setShowDeleteConfirm(false)}
+            />
+          </div>
         </div>
 
         {/* Right Col - Imóveis vinculados */}

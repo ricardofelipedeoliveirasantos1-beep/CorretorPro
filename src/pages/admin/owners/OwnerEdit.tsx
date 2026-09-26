@@ -3,17 +3,22 @@ import { ArrowLeft, User, Phone } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/Input'
 import { mockOwners } from '../../../mocks/mockOwners'
+import { InlineFeedback } from '../../../components/ui/InlineFeedback'
+import { useState } from 'react'
 
 export function OwnerEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const owner = mockOwners.find(o => o.id === id) || mockOwners[0]
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Proprietário atualizado com sucesso! (Mock)')
-    navigate('/proprietarios')
+    setShowSuccess(true)
+    setTimeout(() => {
+      navigate('/proprietarios')
+    }, 1000)
   }
 
   return (
@@ -32,6 +37,12 @@ export function OwnerEdit() {
           <Button onClick={handleSubmit}>Salvar Alterações</Button>
         </div>
       </div>
+
+      <InlineFeedback
+        type="success"
+        message="Proprietário atualizado com sucesso!"
+        visible={showSuccess}
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <section className="rounded-xl border border-base-200 bg-white p-6 shadow-sm">

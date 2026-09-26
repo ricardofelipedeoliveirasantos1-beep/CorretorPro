@@ -1,6 +1,6 @@
 import { type Property } from '../../types/property'
 import { PropertyStatusBadge } from './PropertyStatusBadge'
-import { Edit, Eye, Globe } from 'lucide-react'
+import { Edit, Eye, MapPin } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Link } from 'react-router-dom'
 
@@ -14,13 +14,13 @@ export function PropertyTable({ properties }: PropertyTableProps) {
       <table className="w-full text-left text-sm table-fixed">
         <thead className="bg-base-50 dark:bg-[#0B1320] text-base-500 dark:text-[#B7C2D6] border-b border-base-200 dark:border-[#24344D] transition-colors duration-300">
           <tr>
-            <th className="w-[35%] px-4 py-4 font-medium truncate">Imóvel</th>
+            <th className="w-[32%] px-4 py-4 font-medium truncate">Imóvel</th>
             <th className="w-[15%] px-4 py-4 font-medium truncate">Localização</th>
             <th className="w-[10%] px-4 py-4 font-medium truncate text-center">Finalidade</th>
             <th className="w-[15%] px-4 py-4 font-medium truncate">Preço</th>
             <th className="w-[12%] px-4 py-4 font-medium text-center truncate">Status</th>
-            <th className="w-[5%] px-4 py-4 font-medium text-center truncate" title="Publicação">Portal</th>
-            <th className="w-[8%] px-4 py-4 font-medium text-right truncate">Ações</th>
+            <th className="w-[8%] px-4 py-4 font-medium text-center truncate" title="Localização no Maps">Maps</th>
+            <th className="w-[8%] px-4 py-4 font-medium text-center truncate">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-base-200 dark:divide-[#24344D]">
@@ -67,20 +67,24 @@ export function PropertyTable({ properties }: PropertyTableProps) {
                 <td className="px-4 py-4 align-middle text-center">
                   <PropertyStatusBadge status={property.status} />
                 </td>
-                <td className="px-4 py-4 align-middle text-center" title="Publicado no Portal">
-                  {property.isPublished ? (
-                    <Globe className="mx-auto h-4 w-4 text-[#1685FF]" />
+                <td className="px-4 py-4 align-middle text-center">
+                  {property.mapsUrl ? (
+                    <a href={property.mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors" title="Abrir no Maps">
+                      <MapPin className="h-[18px] w-[18px]" />
+                    </a>
                   ) : (
-                    <span className="text-xs text-base-400 dark:text-slate-600">-</span>
+                    <Link to={`/imoveis/${property.id}/editar`} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-base-400 dark:text-slate-600 hover:text-base-600 dark:hover:text-slate-400 hover:bg-base-100 dark:hover:bg-slate-800 transition-colors" title="Cadastrar Localização">
+                      <MapPin className="h-[18px] w-[18px]" />
+                    </Link>
                   )}
                 </td>
-                <td className="px-4 py-4 align-middle text-right">
-                  <div className="flex justify-end gap-1">
+                <td className="px-4 py-4 align-middle">
+                  <div className="flex items-center justify-center gap-2">
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-base-600 dark:text-[#B7C2D6] dark:hover:text-[#F8FAFC] dark:hover:bg-white/10" title="Visualizar" asChild>
-                      <Link to={`/imoveis/${property.id}`}><Eye className="h-4 w-4" /></Link>
+                      <Link to={`/imoveis/${property.id}`}><Eye className="h-[18px] w-[18px]" /></Link>
                     </Button>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-base-600 dark:text-[#B7C2D6] dark:hover:text-[#F8FAFC] dark:hover:bg-white/10" title="Editar" asChild>
-                      <Link to={`/imoveis/${property.id}/editar`}><Edit className="h-4 w-4" /></Link>
+                      <Link to={`/imoveis/${property.id}/editar`}><Edit className="h-[18px] w-[18px]" /></Link>
                     </Button>
                   </div>
                 </td>

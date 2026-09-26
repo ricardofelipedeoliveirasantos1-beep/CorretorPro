@@ -4,6 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import { ProtectedRoute } from './components/common/ProtectedRoute'
 import { AuthLayout } from './layouts/AuthLayout'
 import { AdminLayout } from './layouts/AdminLayout'
+import { ClientsProvider } from './contexts/ClientsContext'
 
 // Páginas de Autenticação
 import { Login } from './pages/auth/Login'
@@ -12,6 +13,15 @@ import { ForgotPassword } from './pages/auth/ForgotPassword'
 import { ResetPassword } from './pages/auth/ResetPassword'
 
 import { Dashboard } from './pages/admin/Dashboard'
+import { LeadsList } from './pages/admin/leads/LeadsList'
+import { ClientesList } from './pages/admin/clientes/ClientesList'
+import { Agenda } from './pages/admin/agenda/Agenda'
+import { NegociosBoard } from './pages/admin/negocios/NegociosBoard'
+import { Relatorios } from './pages/admin/relatorios/Relatorios'
+import { Configuracoes } from './pages/admin/configuracoes/Configuracoes'
+import { LogoConfiguracoes } from './pages/admin/configuracoes/LogoConfiguracoes'
+import { AparenciaConfiguracoes } from './pages/admin/configuracoes/AparenciaConfiguracoes'
+
 import { PropertiesList } from './pages/admin/properties/PropertiesList'
 import { PropertyCreate } from './pages/admin/properties/PropertyCreate'
 import { PropertyEdit } from './pages/admin/properties/PropertyEdit'
@@ -25,8 +35,9 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-      <Routes>
-        {/* Rotas Públicas de Autenticação */}
+        <ClientsProvider>
+          <Routes>
+            {/* Rotas Públicas de Autenticação */}
         <Route element={<ProtectedRoute requireAuth={false} />}>
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
@@ -40,6 +51,14 @@ function App() {
         <Route element={<ProtectedRoute requireAuth={true} />}>
           <Route element={<AdminLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/leads" element={<LeadsList />} />
+            <Route path="/clientes" element={<ClientesList />} />
+            <Route path="/agenda" element={<Agenda />} />
+            <Route path="/negocios" element={<NegociosBoard />} />
+            <Route path="/relatorios" element={<Relatorios />} />
+            <Route path="/configuracoes" element={<Configuracoes />} />
+            <Route path="/configuracoes/logo" element={<LogoConfiguracoes />} />
+            <Route path="/configuracoes/aparencia" element={<AparenciaConfiguracoes />} />
 
             {/* Imóveis */}
             <Route path="/imoveis" element={<PropertiesList />} />
@@ -58,7 +77,8 @@ function App() {
         {/* Rota inicial provisória redirecionando para login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-      </Routes>
+          </Routes>
+        </ClientsProvider>
       </AuthProvider>
     </ThemeProvider>
   )

@@ -76,8 +76,16 @@ export function PropertyCard({ property }: PropertyCardProps) {
           {price} <span className="text-xs font-normal text-base-500 dark:text-[#B7C2D6]">{property.purpose === 'Aluguel' ? '/mês' : ''}</span>
         </div>
 
-        {/* Actions */}
         <div className="mt-auto flex items-center justify-between gap-3">
+          {property.mapsUrl ? (
+            <Button variant="outline" size="sm" className="w-10 h-10 p-0 shrink-0 text-blue-500 border-blue-200 hover:bg-blue-50 dark:border-blue-900/50 dark:hover:bg-blue-900/30" title="Abrir no Maps" asChild>
+              <a href={property.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin className="h-4 w-4" /></a>
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" className="w-10 h-10 p-0 shrink-0 dark:border-[#24344D] dark:text-[#B7C2D6] dark:hover:bg-white/5" title="Cadastrar Localização" asChild>
+              <Link to={`/imoveis/${property.id}/editar`}><MapPin className="h-4 w-4" /></Link>
+            </Button>
+          )}
           <Button variant="outline" className="flex-1 dark:border-[#24344D] dark:text-[#B7C2D6] dark:hover:bg-white/5 dark:hover:text-[#F8FAFC]" asChild>
             <Link to={`/imoveis/${property.id}`}>Ver Detalhes</Link>
           </Button>

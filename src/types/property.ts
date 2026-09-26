@@ -1,6 +1,6 @@
 export type PropertyPurpose = 'Venda' | 'Aluguel'
 export type PropertyType = 'Apartamento' | 'Casa' | 'Terreno' | 'Sala Comercial' | 'Cobertura' | 'Sítio/Chácara' | 'Galpão'
-export type PropertyStatus = 'Disponível' | 'Reservado' | 'Em negociação' | 'Vendido' | 'Alugado' | 'Inativo'
+export type PropertyStatus = 'Disponível' | 'Negociando' | 'Vendido' | 'Indisponível'
 
 export interface PropertyPhoto {
   id: string
@@ -72,6 +72,7 @@ export interface Property {
   videos?: { id: string; url: string; name?: string }[]
 
   isPublished: boolean
+  mapsUrl?: string
   createdAt: string
   updatedAt: string
 }
