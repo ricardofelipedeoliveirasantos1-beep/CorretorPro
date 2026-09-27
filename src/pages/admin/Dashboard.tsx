@@ -23,7 +23,15 @@ export function Dashboard() {
 
   const recentProperties = useMemo(() => {
     return [...mockProperties]
-      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      .filter(p => p.status === 'Disponível')
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0).getTime();
+        const dateB = new Date(b.createdAt || 0).getTime();
+        if (dateB !== dateA) {
+          return dateB - dateA;
+        }
+        return a.id.localeCompare(b.id);
+      })
       .slice(0, 10);
   }, []);
 
