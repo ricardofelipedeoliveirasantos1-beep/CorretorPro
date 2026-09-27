@@ -1,7 +1,9 @@
-import { mockDashboardMetrics, mockUpcomingAppointments, mockRecentProperties } from '../../mocks/mockDashboard'
+import { mockDashboardMetrics, mockUpcomingAppointments } from '../../mocks/mockDashboard'
+import { mockProperties } from '../../mocks/mockProperties'
 import { Home, Users, Calendar, DollarSign, MapPin, Clock } from 'lucide-react'
 import { MetricCard } from '../../components/dashboard/MetricCard'
 import { DashboardCard } from '../../components/dashboard/DashboardCard'
+import { RecentPropertiesCarousel } from '../../components/dashboard/RecentPropertiesCarousel'
 import { cn } from '../../utils/cn'
 import { useClients } from '../../contexts/ClientsContext'
 import { useMemo, useState, useEffect } from 'react'
@@ -18,6 +20,12 @@ export function Dashboard() {
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
       .slice(0, 3);
   }, [clients]);
+
+  const recentProperties = useMemo(() => {
+    return [...mockProperties]
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      .slice(0, 10);
+  }, []);
 
   const [deals, setDeals] = useState<any[]>([]);
 
@@ -99,8 +107,11 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Listas: Próximos compromissos, Novos Leads e Novos Imóveis */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 h-auto">
+      {/* Carrossel de Novos Imóveis */}
+      <RecentPropertiesCarousel properties={recentProperties} />
+
+      {/* Listas: Próximos compromissos e Novos Leads */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 h-auto">
         {/* Próximo Compromisso */}
         <DashboardCard
           title="Próximo Compromisso"
@@ -199,46 +210,6 @@ export function Dashboard() {
           </div>
         </DashboardCard>
 
-        {/* Novos Imóveis */}
-        <DashboardCard
-          title="Novos Imóveis"
-          icon={<Home className="h-6 w-6" />}
-          borderColor="teal"
-          linkTo="/imoveis"
-        >
-          <div className="space-y-0 pt-1">
-            {mockRecentProperties.slice(0, 3).map((property, idx) => (
-              <div
-                key={property.id}
-                className={cn(
-                  'flex items-center justify-between py-[11px]',
-                  idx !== Math.min(mockRecentProperties.length, 3) - 1
-                    ? 'border-b border-[#E2E8F0] dark:border-[rgba(0,209,178,0.15)]'
-                    : ''
-                )}
-              >
-                <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                  <div className="h-10 w-[60px] rounded-[6px] overflow-hidden shrink-0 bg-[#E2E8F0] dark:bg-[#1E3048]">
-                    <img src={property.imageUrl} alt={property.title} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="min-w-0 pr-2 flex-1">
-                    <p className="font-bold text-[14.5px] text-[#0F172A] dark:text-[#F8FAFC] truncate">{property.title}</p>
-                    <p className="text-[12.5px] text-[#475569] dark:text-[#B8C4D9] truncate mt-0.5">{property.addedAt}</p>
-                  </div>
-                  <div className="shrink-0">
-                    <div className={cn(
-                      "px-2.5 py-[2px] rounded-full text-[10px] font-semibold border",
-                      idx === 0 ? "text-[#00D1B2] border-[#00D1B2] bg-[rgba(0,209,178,0.1)]" :
-                      idx === 1 ? "text-[#F5B000] border-[#F5B000] bg-[rgba(245,176,0,0.1)]" :
-                      "text-[#1992FF] border-[#1992FF] bg-[rgba(25,146,255,0.1)]"
-                    )}>
-                      {property.badge}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </DashboardCard>
       </div>
     </div>
