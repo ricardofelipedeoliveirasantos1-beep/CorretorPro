@@ -27,32 +27,32 @@ const FILTER_OPTIONS = [
   {
     label: 'Todos',
     value: '',
-    activeClass: 'bg-[#1992FF] text-white border-[#1992FF] shadow-[0_4px_12px_rgba(25,146,255,0.3)]',
-    inactiveClass: 'bg-[#1992FF]/5 dark:bg-[#1992FF]/10 text-[#1992FF] border-[#1992FF]/30 hover:border-[#1992FF] hover:bg-[#1992FF]/10 dark:hover:bg-[#1992FF]/20'
+    activeClass: 'bg-[#1685FF]/10 text-[#1685FF] border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/50 shadow-[0_2px_8px_rgba(22,133,255,0.15)] font-bold',
+    inactiveClass: 'bg-transparent text-[#64748B] border-[#E2E8F0] dark:text-[#94A3B8] dark:border-[rgba(25,146,255,0.15)] hover:bg-[#1685FF]/5 dark:hover:bg-[rgba(25,146,255,0.05)]'
   },
   {
     label: 'Ativos',
     value: 'Ativo',
-    activeClass: 'bg-[#10B981] text-white border-[#10B981] shadow-[0_4px_12px_rgba(16,185,129,0.3)]',
-    inactiveClass: 'bg-[#10B981]/5 dark:bg-[#10B981]/10 text-[#10B981] border-[#10B981]/30 hover:border-[#10B981] hover:bg-[#10B981]/10 dark:hover:bg-[#10B981]/20'
+    activeClass: 'bg-[#10B981]/10 text-[#059669] border-[#10B981]/30 dark:bg-[#10B981]/20 dark:text-[#34D399] dark:border-[#10B981]/50 shadow-[0_2px_8px_rgba(16,185,129,0.15)] font-bold',
+    inactiveClass: 'bg-transparent text-[#64748B] border-[#E2E8F0] dark:text-[#94A3B8] dark:border-[rgba(25,146,255,0.15)] hover:bg-[#10B981]/5 dark:hover:bg-[#10B981]/10'
   },
   {
     label: 'Em negociação',
     value: 'Em negociação',
-    activeClass: 'bg-[#A855F7] text-white border-[#A855F7] shadow-[0_4px_12px_rgba(168,85,247,0.3)]',
-    inactiveClass: 'bg-[#A855F7]/5 dark:bg-[#A855F7]/10 text-[#A855F7] border-[#A855F7]/30 hover:border-[#A855F7] hover:bg-[#A855F7]/10 dark:hover:bg-[#A855F7]/20'
+    activeClass: 'bg-[#A855F7]/10 text-[#9333EA] border-[#A855F7]/30 dark:bg-[#A855F7]/20 dark:text-[#C084FC] dark:border-[#A855F7]/50 shadow-[0_2px_8px_rgba(168,85,247,0.15)] font-bold',
+    inactiveClass: 'bg-transparent text-[#64748B] border-[#E2E8F0] dark:text-[#94A3B8] dark:border-[rgba(25,146,255,0.15)] hover:bg-[#A855F7]/5 dark:hover:bg-[#A855F7]/10'
   },
   {
-    label: 'Com negócio fechado',
+    label: 'Negócio Fechado',
     value: 'Com negócio fechado',
-    activeClass: 'bg-[#F59E0B] text-white border-[#F59E0B] shadow-[0_4px_12px_rgba(245,158,11,0.3)]',
-    inactiveClass: 'bg-[#F59E0B]/5 dark:bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/30 hover:border-[#F59E0B] hover:bg-[#F59E0B]/10 dark:hover:bg-[#F59E0B]/20'
+    activeClass: 'bg-[#F59E0B]/10 text-[#D97706] border-[#F59E0B]/30 dark:bg-[#F59E0B]/20 dark:text-[#FBBF24] dark:border-[#F59E0B]/50 shadow-[0_2px_8px_rgba(245,158,11,0.15)] font-bold',
+    inactiveClass: 'bg-transparent text-[#64748B] border-[#E2E8F0] dark:text-[#94A3B8] dark:border-[rgba(25,146,255,0.15)] hover:bg-[#F59E0B]/5 dark:hover:bg-[#F59E0B]/10'
   },
   {
     label: 'Inativos',
     value: 'Inativo',
-    activeClass: 'bg-[#EF4444] text-white border-[#EF4444] shadow-[0_4px_12px_rgba(239,68,68,0.3)]',
-    inactiveClass: 'bg-[#EF4444]/5 dark:bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/30 hover:border-[#EF4444] hover:bg-[#EF4444]/10 dark:hover:bg-[#EF4444]/20'
+    activeClass: 'bg-[#EF4444]/10 text-[#DC2626] border-[#EF4444]/30 dark:bg-[#EF4444]/20 dark:text-[#F87171] dark:border-[#EF4444]/50 shadow-[0_2px_8px_rgba(239,68,68,0.15)] font-bold',
+    inactiveClass: 'bg-transparent text-[#64748B] border-[#E2E8F0] dark:text-[#94A3B8] dark:border-[rgba(25,146,255,0.15)] hover:bg-[#EF4444]/5 dark:hover:bg-[#EF4444]/10'
   },
 ]
 
@@ -275,7 +275,7 @@ export function ClientesList() {
               i === 4 ? "col-span-2 md:col-span-1" : "",
               "h-[40px] lg:h-[44px]",
               "px-2 md:px-[16px] lg:px-[22px]",
-              "rounded-[12px]",
+              "rounded-[8px]",
               "text-[13px] md:text-[14px] font-semibold tracking-wide leading-tight",
               advancedFilters.status === opt.value ? opt.activeClass : opt.inactiveClass
             )}
@@ -300,8 +300,8 @@ export function ClientesList() {
       {paginatedClients.length > 0 && (
         <div className="hidden lg:block w-full">
           <table className="w-full text-left border-separate border-spacing-y-3">
-            <thead className="text-[#475569] dark:text-[#CBD5E1]">
-              <tr className="text-[12px] font-bold uppercase tracking-wider">
+            <thead className="text-[#0F172A] dark:text-[#CBD5E1]">
+              <tr className="text-[12px] font-semibold uppercase tracking-wider">
                 <th className="px-6 py-2">Cliente / Contato</th>
                 <th className="px-6 py-2">Interesse Principal</th>
                 <th className="px-6 py-2">Responsável</th>
@@ -340,7 +340,7 @@ export function ClientesList() {
                     <div className="flex justify-center items-center h-full w-full">
                       <button
                         onClick={() => setSelectedClient(cliente)}
-                        className="w-full max-w-[110px] h-[32px] flex items-center justify-center bg-[#005CE6] dark:bg-[#1685FF] text-white font-bold text-[11px] uppercase tracking-wider rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
+                        className="w-full max-w-[110px] h-[32px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[11px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap"
                       >
                         Ver perfil
                       </button>
@@ -391,7 +391,7 @@ export function ClientesList() {
 
               <button
                 onClick={() => setSelectedClient(cliente)}
-                className="w-full h-[36px] flex items-center justify-center bg-[#005CE6] dark:bg-[#1685FF] text-white font-bold text-[12px] uppercase tracking-wider rounded-full hover:opacity-90 transition-colors"
+                className="w-full h-[36px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[12px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors"
               >
                 Ver perfil
               </button>
