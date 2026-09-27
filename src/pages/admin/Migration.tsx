@@ -216,6 +216,7 @@ export function Migration() {
       <div className="bg-white dark:bg-[#1E293B] rounded-xl p-6 shadow-sm border border-gray-100 dark:border-[rgba(255,255,255,0.1)] mb-8">
         <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Status do Ambiente</h2>
         <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+          <li><strong>Ambiente:</strong> Firebase Real</li>
           <li><strong>Usuário:</strong> {user.email}</li>
           <li><strong>UID:</strong> {user.uid}</li>
           <li><strong>Workspace:</strong> {workspace.name}</li>
