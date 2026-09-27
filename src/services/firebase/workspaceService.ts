@@ -79,10 +79,6 @@ export async function getUserWorkspaces(userId: string): Promise<Workspace[]> {
   return workspacesSnapshot.docs.map(doc => doc.data() as Workspace);
 }
 
-/**
- * Bootstraps a new SaaS client workflow.
- * Ensures that user, workspace, and membership are created safely.
- */
 export async function bootstrapSaaSClient(uid: string, email: string | null, displayName: string | null, workspaceNameFromInput?: string) {
   // 1. Ensure User Profile
   const user = await createUser({
@@ -92,48 +88,57 @@ export async function bootstrapSaaSClient(uid: string, email: string | null, dis
     photoURL: null
   });
 
-  // 2. Check if user already has a workspace
+  // 2. Check if user already has a workspace membership
   const memberships = await getMemberships(uid);
   let activeOwnerMembership = memberships.find(m => m.role === 'owner' && m.status === 'active');
 
-  let workspace: Workspace | null = null;
+  const deterministicWorkspaceId = `workspace_${uid}`;
+  const deterministicMembershipId = `${uid}_${deterministicWorkspaceId}`;
 
-  if (activeOwnerMembership) {
-    // Already has an active workspace
-    const wsRef = doc(db, 'workspaces', activeOwnerMembership.workspaceId);
-    const wsSnap = await getDoc(wsRef);
-    if (wsSnap.exists()) {
-      workspace = wsSnap.data() as Workspace;
-    }
-  } else {
-    // 3. Create a new Workspace deterministically to avoid StrictMode race conditions
-    const workspaceId = `workspace_${uid}`;
-    const slugBase = email ? email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '-') : 'imoveis-' + Math.floor(Math.random()*1000);
-    const workspaceName = workspaceNameFromInput || (displayName ? `${displayName} Imóveis` : 'Meu CRM');
-    
-    workspace = {
-      id: workspaceId,
-      name: workspaceName,
-      slug: slugBase.toLowerCase(),
-      ownerUid: uid,
-      plan: 'basic',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    await setDoc(doc(db, 'workspaces', workspaceId), workspace);
-
-    // 4. Create Owner Membership deterministically
-    const membershipId = `${uid}_${workspaceId}`;
+  // 3. SE NÃO TEM MEMBERSHIP, CRIA PRIMEIRO (para liberar as regras do Firestore)
+  if (!activeOwnerMembership) {
     activeOwnerMembership = {
-      id: membershipId,
+      id: deterministicMembershipId,
       userId: uid,
-      workspaceId: workspaceId,
+      workspaceId: deterministicWorkspaceId,
       role: 'owner',
       status: 'active',
       createdAt: new Date().toISOString(),
     };
-    await setDoc(doc(db, 'memberships', membershipId), activeOwnerMembership);
+    // setDoc is allowed by rules (create or update for owner)
+    await setDoc(doc(db, 'memberships', deterministicMembershipId), activeOwnerMembership);
+  }
+
+  // 4. AGORA QUE TEM MEMBERSHIP, PODEMOS LER/ATUALIZAR O WORKSPACE
+  let workspace: Workspace | null = null;
+  const targetWorkspaceId = activeOwnerMembership.workspaceId;
+  const wsRef = doc(db, 'workspaces', targetWorkspaceId);
+  
+  try {
+    const wsSnap = await getDoc(wsRef);
+    if (wsSnap.exists()) {
+      workspace = wsSnap.data() as Workspace;
+    } else {
+      // ORPHAN WORKSPACE: A membership exists, but the workspace document is missing!
+      // Vamos recriar o workspace com o mesmo ID da membership
+      const slugBase = email ? email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '-') : 'imoveis-' + Math.floor(Math.random()*1000);
+      const workspaceName = workspaceNameFromInput || (displayName ? `${displayName} Imóveis` : 'Meu CRM');
+      
+      workspace = {
+        id: targetWorkspaceId,
+        name: workspaceName,
+        slug: slugBase.toLowerCase(),
+        ownerUid: uid,
+        plan: 'basic',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      await setDoc(wsRef, workspace);
+    }
+  } catch (error) {
+    console.error('Erro ao acessar workspace. Garantindo criação segura...', error);
+    throw error;
   }
 
   return {
