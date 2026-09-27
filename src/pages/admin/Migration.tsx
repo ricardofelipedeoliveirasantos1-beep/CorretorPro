@@ -16,15 +16,29 @@ interface MigrationReport {
 }
 
 export function Migration() {
-  const { user, workspace, membership } = useAuth();
+  const { user, workspace, membership, isDemoMode } = useAuth();
   const [report, setReport] = useState<MigrationReport | null>(null);
   const [isMigrating, setIsMigrating] = useState(false);
+  const [backupDone, setBackupDone] = useState(false);
   const [migrationDone, setMigrationDone] = useState(false);
   const [migratedCount, setMigratedCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
+  const [migrationError, setMigrationError] = useState<string | null>(null);
 
   // Security checks
+  if (isDemoMode) {
+    return (
+      <div className="p-8 max-w-4xl mx-auto">
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 p-6 rounded-lg text-center">
+          <h2 className="text-xl font-bold mb-2">Modo Demonstração Ativo</h2>
+          <p>A migração deve ser executada com uma conta Firebase real.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!user || !workspace || !membership || membership.role !== 'owner' || membership.status !== 'active') {
-    return <div className="p-8 text-red-500 font-bold">Acesso Negado. Requer privilégios de Owner.</div>;
+    return <div className="p-8 text-red-500 font-bold text-center">Acesso Negado. Requer privilégios de Owner.</div>;
   }
 
   const handleDryRun = async () => {
@@ -52,7 +66,7 @@ export function Migration() {
 
       rawClients.forEach(client => {
         if (client && typeof client === 'object' && client.id && client.name) {
-          // Normalization
+          // Normalization & Idempotent ID
           const firestoreClientId = `client_${workspace.id}_${client.id}`;
           
           const normalized = {
@@ -102,6 +116,9 @@ export function Migration() {
         clientsToMigrate: finalToMigrate,
         legacyMap
       });
+      setBackupDone(false);
+      setMigrationDone(false);
+      setMigrationError(null);
     } catch (err) {
       console.error(err);
       alert('Erro no Dry Run');
@@ -124,6 +141,7 @@ export function Migration() {
     const backupData = {
       timestamp: new Date().toISOString(),
       workspaceId: workspace.id,
+      executorUid: user.uid,
       count: report.totalFound,
       records: JSON.parse(saved)
     };
@@ -132,17 +150,28 @@ export function Migration() {
     const backupUrl = URL.createObjectURL(backupBlob);
     const backupA = document.createElement('a');
     backupA.href = backupUrl;
-    backupA.download = `backup-clients-pre-firestore-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    
+    backupA.download = `backup-clients-pre-firestore-${dateStr}.json`;
     backupA.click();
+
+    setBackupDone(true);
   };
 
   const handleMigrate = async () => {
-    if (!report || report.clientsToMigrate.length === 0) return;
+    if (!report || report.clientsToMigrate.length === 0 || !backupDone) return;
     
     setIsMigrating(true);
+    setMigrationError(null);
+    let successCount = 0;
+    let errCount = 0;
+
     try {
       // Split into batches of 500 (Firestore limit)
-      const batches = [];
+      const batchPromises = [];
       for (let i = 0; i < report.clientsToMigrate.length; i += 500) {
         const batch = writeBatch(db);
         const chunk = report.clientsToMigrate.slice(i, i + 500);
@@ -152,15 +181,31 @@ export function Migration() {
           batch.set(ref, client);
         });
         
-        batches.push(batch.commit());
+        batchPromises.push(batch.commit().then(() => chunk.length));
       }
       
-      await Promise.all(batches);
-      setMigratedCount(report.clientsToMigrate.length);
-      setMigrationDone(true);
-    } catch (err) {
+      const results = await Promise.allSettled(batchPromises);
+      
+      results.forEach(result => {
+        if (result.status === 'fulfilled') {
+          successCount += result.value;
+        } else {
+          errCount += 500; // rough estimate for failed batch
+          console.error("Batch error:", result.reason);
+        }
+      });
+
+      setMigratedCount(successCount);
+      setFailedCount(errCount);
+      
+      if (errCount > 0) {
+        setMigrationError(`Falha ao migrar alguns registros. Sucesso: ${successCount}. Falhas: ${errCount}. Verifique o console.`);
+      } else {
+        setMigrationDone(true);
+      }
+    } catch (err: any) {
       console.error(err);
-      alert('Erro na migração. Verifique o console.');
+      setMigrationError(err.message || 'Erro crítico na migração.');
     } finally {
       setIsMigrating(false);
     }
@@ -173,8 +218,10 @@ export function Migration() {
       <div className="bg-white dark:bg-[#1E293B] rounded-xl p-6 shadow-sm border border-gray-100 dark:border-[rgba(255,255,255,0.1)] mb-8">
         <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Status do Ambiente</h2>
         <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+          <li><strong>Usuário:</strong> {user.email}</li>
           <li><strong>UID:</strong> {user.uid}</li>
-          <li><strong>Workspace:</strong> {workspace.name} ({workspace.id})</li>
+          <li><strong>Workspace:</strong> {workspace.name}</li>
+          <li><strong>Workspace ID:</strong> {workspace.id}</li>
           <li><strong>Role:</strong> {membership.role}</li>
         </ul>
       </div>
@@ -192,15 +239,15 @@ export function Migration() {
             onClick={handleBackup}
             className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold"
           >
-            Fazer Backup JSON
+            Fazer Backup JSON e Map
           </button>
         )}
 
         {report && !migrationDone && (
           <button 
             onClick={handleMigrate}
-            disabled={isMigrating || report.clientsToMigrate.length === 0}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold disabled:opacity-50"
+            disabled={isMigrating || report.clientsToMigrate.length === 0 || !backupDone}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isMigrating ? 'Migrando...' : 'Migrar para Firestore'}
           </button>
@@ -237,10 +284,22 @@ export function Migration() {
               <p className="text-2xl font-bold text-yellow-600">{report.duplicates}</p>
             </div>
           </div>
+          
+          {!backupDone && report.clientsToMigrate.length > 0 && (
+            <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg mb-4">
+              ⚠️ O botão de migração está desabilitado. Faça o Backup JSON primeiro.
+            </div>
+          )}
+
+          {migrationError && (
+            <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg font-medium mb-4">
+              ❌ {migrationError}
+            </div>
+          )}
 
           {migrationDone && (
-            <div className="p-4 bg-green-50 dark:bg-[rgba(34,197,94,0.1)] border border-green-200 dark:border-[rgba(34,197,94,0.2)] rounded-lg text-green-700 dark:text-green-400 font-medium">
-              ✅ Migração concluída com sucesso! {migratedCount} clientes migrados para o Firestore.
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 font-medium">
+              ✅ Migração concluída com sucesso! {migratedCount} clientes gravados.
             </div>
           )}
         </div>
