@@ -1,7 +1,6 @@
 import { type Property } from '../../types/property'
 import { PropertyStatusBadge } from './PropertyStatusBadge'
-import { MapPin, Globe } from 'lucide-react'
-import { Button } from '../ui/Button'
+import { MapPin, Globe, Eye, Edit } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 interface PropertyCardProps {
