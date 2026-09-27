@@ -13,7 +13,8 @@ interface AuthContextType {
   workspaceId: string | null;
   membership: Membership | null;
   role: string | null;
-  isLoading: boolean;
+  authLoading: boolean;
+  bootstrapLoading: boolean;
   isDemoMode: boolean;
   authError: string | null;
   signInDemo: (email: string) => void;
@@ -29,7 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [dbUser, setDbUser] = useState<User | null>(null);
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [bootstrapLoading, setBootstrapLoading] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -40,9 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (storedDemo) {
         try {
           const data = JSON.parse(storedDemo);
-          setUser(data.user as any); // Fake user
+          setUser(data.user);
+          setWorkspace(data.workspace);
+          setMembership(data.membership);
+          setDbUser(data.dbUser);
           setIsDemoMode(true);
-          setIsLoading(false);
+          setAuthLoading(false);
           return;
         } catch (e) {
           console.error('Erro ao ler sessão demo', e);
@@ -52,9 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Firebase Auth listener
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setAuthLoading(false);
+      
       if (firebaseUser && !localStorage.getItem('@futcrm:demo_session')) {
         setUser(firebaseUser);
         setIsDemoMode(false);
+        setBootstrapLoading(true);
+        setAuthError(null);
+        
         try {
           // Bootstrap or fetch existing workspace data
           const pendingWorkspaceName = sessionStorage.getItem('@futcrm:pending_workspace_name');
@@ -75,15 +85,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setDbUser(null);
           setWorkspace(null);
           setMembership(null);
+        } finally {
+          setBootstrapLoading(false);
         }
-      } else if (!isDemoMode) {
+      } else if (!isDemoMode && !localStorage.getItem('@futcrm:demo_session')) {
         setUser(null);
         setDbUser(null);
         setWorkspace(null);
         setMembership(null);
         setAuthError(null);
       }
-      setIsLoading(false);
     });
 
     return () => unsubscribe();
@@ -98,8 +109,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       displayName: 'Usuário Demo'
     } as any;
 
-    localStorage.setItem('@futcrm:demo_session', JSON.stringify({ user: fakeUser }));
+    const fakeWorkspace = {
+      id: 'demo-workspace',
+      name: 'Demonstração Imóveis',
+      slug: 'demo',
+      ownerUid: fakeUser.uid,
+      plan: 'basic',
+      status: 'active'
+    } as any;
+
+    const fakeMembership = {
+      id: 'demo-membership',
+      userId: fakeUser.uid,
+      workspaceId: fakeWorkspace.id,
+      role: 'owner',
+      status: 'active'
+    } as any;
+
+    const fakeDbUser = {
+      uid: fakeUser.uid,
+      email: email,
+      displayName: fakeUser.displayName
+    } as any;
+
+    localStorage.setItem('@futcrm:demo_session', JSON.stringify({ 
+      user: fakeUser, 
+      workspace: fakeWorkspace, 
+      membership: fakeMembership, 
+      dbUser: fakeDbUser 
+    }));
+    
     setUser(fakeUser);
+    setWorkspace(fakeWorkspace);
+    setMembership(fakeMembership);
+    setDbUser(fakeDbUser);
     setIsDemoMode(true);
   };
 
@@ -116,7 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  if (isLoading) {
+  if (authLoading) {
     return <LoadingState fullScreen message="Carregando..." />;
   }
 
@@ -131,7 +174,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       workspaceId: workspace?.id || null,
       membership, 
       role: membership?.role || null,
-      isLoading, 
+      authLoading, 
+      bootstrapLoading,
       isDemoMode, 
       authError,
       signInDemo, 
