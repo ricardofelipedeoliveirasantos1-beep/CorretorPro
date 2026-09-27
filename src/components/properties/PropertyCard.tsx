@@ -18,7 +18,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const shortDesc = property.features?.bedrooms ? `${property.features.bedrooms} quartos, ${property.features.totalArea}m²` : 'Excelente imóvel'
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-base-200 dark:border-[#24344D] bg-white dark:bg-[#111C2E] shadow-sm transition-colors duration-300 w-full mb-4">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-[#1685FF]/30 dark:border-[#24344D] bg-white dark:bg-[#111C2E] shadow-[0_4px_12px_rgba(22,133,255,0.08)] dark:shadow-sm transition-colors duration-300 w-full mb-4">
       {/* Top Header - Mobile new structure */}
       <div className="flex flex-col gap-1 p-4 pb-3 border-b border-base-100 dark:border-[#24344D]">
         <div className="flex items-center gap-2">
@@ -61,10 +61,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div>
-            <p className="text-[11px] text-base-500 dark:text-[#B7C2D6] font-medium mb-0.5">Finalidade</p>
-            <span className="inline-flex rounded-full bg-base-100 dark:bg-[#0B1320] border border-base-200 dark:border-[#24344D] px-2.5 py-0.5 text-xs font-medium text-base-700 dark:text-[#B7C2D6]">
+            <p className="text-[11px] text-base-500 dark:text-[#B7C2D6] font-medium mb-1">Finalidade</p>
+            <div className={`inline-flex items-center justify-center min-w-[84px] px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${property.purpose === 'Venda' ? 'bg-[#10B981] text-white' : 'bg-[#F97316] text-white'}`}>
               {property.purpose}
-            </span>
+            </div>
           </div>
           <div>
             <p className="text-[11px] text-base-500 dark:text-[#B7C2D6] font-medium mb-0.5">Status</p>
@@ -76,22 +76,24 @@ export function PropertyCard({ property }: PropertyCardProps) {
           {price} <span className="text-xs font-normal text-base-500 dark:text-[#B7C2D6]">{property.purpose === 'Aluguel' ? '/mês' : ''}</span>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3">
+        <div className="mt-auto flex items-center justify-center gap-6 pt-4">
           {property.mapsUrl ? (
-            <Button variant="outline" size="sm" className="w-10 h-10 p-0 shrink-0 text-blue-500 border-blue-200 hover:bg-blue-50 dark:border-blue-900/50 dark:hover:bg-blue-900/30" title="Abrir no Maps" asChild>
-              <a href={property.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin className="h-4 w-4" /></a>
-            </Button>
+            <a href={property.mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full text-[#1685FF] bg-blue-50 dark:bg-[#1685FF]/10 active:scale-95 transition-all" title="Abrir no Maps">
+              <MapPin className="h-5 w-5" />
+            </a>
           ) : (
-            <Button variant="outline" size="sm" className="w-10 h-10 p-0 shrink-0 dark:border-[#24344D] dark:text-[#B7C2D6] dark:hover:bg-white/5" title="Cadastrar Localização" asChild>
-              <Link to={`/imoveis/${property.id}/editar`}><MapPin className="h-4 w-4" /></Link>
-            </Button>
+            <Link to={`/imoveis/${property.id}/editar`} className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full text-[#1685FF] opacity-50 bg-blue-50 dark:bg-[#1685FF]/10 active:scale-95 transition-all" title="Cadastrar Localização">
+              <MapPin className="h-5 w-5" />
+            </Link>
           )}
-          <Button variant="outline" className="flex-1 dark:border-[#24344D] dark:text-[#B7C2D6] dark:hover:bg-white/5 dark:hover:text-[#F8FAFC]" asChild>
-            <Link to={`/imoveis/${property.id}`}>Ver Detalhes</Link>
-          </Button>
-          <Button variant="outline" className="flex-1 dark:border-[#24344D] dark:text-[#B7C2D6] dark:hover:bg-white/5 dark:hover:text-[#F8FAFC]" asChild>
-            <Link to={`/imoveis/${property.id}/editar`}>Editar</Link>
-          </Button>
+          
+          <Link to={`/imoveis/${property.id}`} className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full text-[#A855F7] bg-purple-50 dark:text-[#C084FC] dark:bg-[#A855F7]/10 active:scale-95 transition-all" title="Visualizar">
+            <Eye className="h-5 w-5" />
+          </Link>
+          
+          <Link to={`/imoveis/${property.id}/editar`} className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full text-[#F59E0B] bg-amber-50 dark:text-[#FCD34D] dark:bg-[#F59E0B]/10 active:scale-95 transition-all" title="Editar">
+            <Edit className="h-5 w-5" />
+          </Link>
         </div>
       </div>
     </div>

@@ -10,20 +10,19 @@ interface PropertyTableProps {
 
 export function PropertyTable({ properties }: PropertyTableProps) {
   return (
-    <div className="w-full rounded-xl border border-base-200 dark:border-[#24344D] bg-white dark:bg-[#111C2E] shadow-sm transition-colors duration-300">
-      <table className="w-full text-left text-sm table-fixed">
-        <thead className="bg-base-50 dark:bg-[#0B1320] text-base-500 dark:text-[#B7C2D6] border-b border-base-200 dark:border-[#24344D] transition-colors duration-300">
+    <div className="w-full">
+      <table className="w-full text-left text-sm table-fixed border-separate border-spacing-y-3">
+        <thead className="text-base-500 dark:text-[#B7C2D6]">
           <tr>
-            <th className="w-[32%] px-4 py-4 font-medium truncate">Imóvel</th>
-            <th className="w-[15%] px-4 py-4 font-medium truncate">Localização</th>
-            <th className="w-[10%] px-4 py-4 font-medium truncate text-center">Finalidade</th>
-            <th className="w-[15%] px-4 py-4 font-medium truncate">Preço</th>
-            <th className="w-[12%] px-4 py-4 font-medium text-center truncate">Status</th>
-            <th className="w-[8%] px-4 py-4 font-medium text-center truncate" title="Localização no Maps">Maps</th>
-            <th className="w-[8%] px-4 py-4 font-medium text-center truncate">Ações</th>
+            <th className="w-[32%] px-4 py-2 font-medium truncate">Imóvel</th>
+            <th className="w-[15%] px-4 py-2 font-medium truncate">Localização</th>
+            <th className="w-[10%] px-4 py-2 font-medium truncate text-center">Finalidade</th>
+            <th className="w-[15%] px-4 py-2 font-medium truncate">Preço</th>
+            <th className="w-[12%] px-4 py-2 font-medium text-center truncate">Status</th>
+            <th className="w-[16%] px-4 py-2 font-medium text-center truncate">Ações</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-base-200 dark:divide-[#24344D]">
+        <tbody>
           {properties.map((property) => {
             const coverPhoto = property.photos.find((p: any) => p.isCover)?.url || property.photos[0]?.url || 'https://via.placeholder.com/400x300?text=Sem+Foto'
             const price = property.purpose === 'Venda'
@@ -31,8 +30,8 @@ export function PropertyTable({ properties }: PropertyTableProps) {
               : property.rentPrice?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
             return (
-              <tr key={property.id} className="transition-colors hover:bg-base-50/50 dark:hover:bg-white/5">
-                <td className="px-4 py-4 align-top">
+              <tr key={property.id} className="group bg-white dark:bg-[#111C2E] transition-all hover:shadow-[0_4px_12px_rgba(22,133,255,0.08)] dark:hover:shadow-none">
+                <td className="px-4 py-4 align-top border-y border-l border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E] rounded-l-xl">
                   <div className="flex gap-4">
                     <div className="h-16 w-24 shrink-0 overflow-hidden rounded-md bg-base-100 dark:bg-slate-800">
                       <img src={coverPhoto} alt="" className="h-full w-full object-cover" />
@@ -52,40 +51,40 @@ export function PropertyTable({ properties }: PropertyTableProps) {
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-4 align-middle">
+                <td className="px-4 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                   <p className="text-[14px] font-medium text-base-900 dark:text-[#F8FAFC] truncate">{property.address.neighborhood}</p>
                   <p className="text-xs text-base-500 dark:text-[#B7C2D6] truncate">{property.address.city}</p>
                 </td>
-                <td className="px-4 py-4 align-middle text-center">
-                  <span className="inline-flex rounded-full bg-base-100 dark:bg-[#0B1320] border border-base-200 dark:border-[#24344D] px-2.5 py-1 text-xs font-medium text-base-700 dark:text-[#B7C2D6]">
+                <td className="px-4 py-4 align-middle text-center border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
+                  <div className={`inline-flex items-center justify-center min-w-[84px] px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${property.purpose === 'Venda' ? 'bg-[#10B981] text-white' : 'bg-[#F97316] text-white'}`}>
                     {property.purpose}
-                  </span>
+                  </div>
                 </td>
-                <td className="px-4 py-4 align-middle font-bold text-[15px] text-base-900 dark:text-[#F8FAFC]">
+                <td className="px-4 py-4 align-middle font-bold text-[15px] text-base-900 dark:text-[#F8FAFC] border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                   {price}
                 </td>
-                <td className="px-4 py-4 align-middle text-center">
+                <td className="px-4 py-4 align-middle text-center border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                   <PropertyStatusBadge status={property.status} />
                 </td>
-                <td className="px-4 py-4 align-middle text-center">
-                  {property.mapsUrl ? (
-                    <a href={property.mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors" title="Abrir no Maps">
-                      <MapPin className="h-[18px] w-[18px]" />
-                    </a>
-                  ) : (
-                    <Link to={`/imoveis/${property.id}/editar`} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-base-400 dark:text-slate-600 hover:text-base-600 dark:hover:text-slate-400 hover:bg-base-100 dark:hover:bg-slate-800 transition-colors" title="Cadastrar Localização">
-                      <MapPin className="h-[18px] w-[18px]" />
+                <td className="px-4 py-4 align-middle border-y border-r border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E] rounded-r-xl">
+                  <div className="flex items-center justify-center gap-4">
+                    {property.mapsUrl ? (
+                      <a href={property.mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[#1685FF] hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all hover:scale-110" title="Abrir no Maps">
+                        <MapPin className="h-5 w-5" />
+                      </a>
+                    ) : (
+                      <Link to={`/imoveis/${property.id}/editar`} className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[#1685FF] opacity-50 hover:opacity-100 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all hover:scale-110" title="Cadastrar Localização">
+                        <MapPin className="h-5 w-5" />
+                      </Link>
+                    )}
+                    
+                    <Link to={`/imoveis/${property.id}`} className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[#A855F7] hover:bg-purple-50 dark:text-[#C084FC] dark:hover:bg-purple-500/10 transition-all hover:scale-110" title="Visualizar">
+                      <Eye className="h-5 w-5" />
                     </Link>
-                  )}
-                </td>
-                <td className="px-4 py-4 align-middle">
-                  <div className="flex items-center justify-center gap-2">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-base-600 dark:text-[#B7C2D6] dark:hover:text-[#F8FAFC] dark:hover:bg-white/10" title="Visualizar" asChild>
-                      <Link to={`/imoveis/${property.id}`}><Eye className="h-[18px] w-[18px]" /></Link>
-                    </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-base-600 dark:text-[#B7C2D6] dark:hover:text-[#F8FAFC] dark:hover:bg-white/10" title="Editar" asChild>
-                      <Link to={`/imoveis/${property.id}/editar`}><Edit className="h-[18px] w-[18px]" /></Link>
-                    </Button>
+                    
+                    <Link to={`/imoveis/${property.id}/editar`} className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[#F59E0B] hover:bg-amber-50 dark:text-[#FCD34D] dark:hover:bg-amber-500/10 transition-all hover:scale-110" title="Editar">
+                      <Edit className="h-5 w-5" />
+                    </Link>
                   </div>
                 </td>
               </tr>
