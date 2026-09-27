@@ -81,6 +81,10 @@ function App() {
         {/* Rota inicial provisória redirecionando para login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
+        {/* Catch-all 404 e aliases para evitar tela branca */}
+        <Route path="/register" element={<Navigate to="/cadastro" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+
           </Routes>
         </ClientsProvider>
       </AuthProvider>
