@@ -274,8 +274,8 @@ export function ClientesList() {
               "w-full md:w-auto md:flex-1",
               i === 4 ? "col-span-2 md:col-span-1" : "",
               "h-[40px] lg:h-[44px]",
-              "px-2 md:px-[16px] lg:px-[22px]",
-              "rounded-[8px]",
+              "px-3 md:px-4 lg:px-6",
+              "rounded-[8px] whitespace-nowrap box-border",
               "text-[13px] md:text-[14px] font-semibold tracking-wide leading-tight",
               advancedFilters.status === opt.value ? opt.activeClass : opt.inactiveClass
             )}
@@ -340,7 +340,7 @@ export function ClientesList() {
                     <div className="flex justify-center items-center h-full w-full">
                       <button
                         onClick={() => setSelectedClient(cliente)}
-                        className="w-full max-w-[110px] h-[32px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[11px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap"
+                        className="px-4 py-2 min-w-[120px] min-h-[34px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[11px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap box-border"
                       >
                         Ver perfil
                       </button>
@@ -391,7 +391,7 @@ export function ClientesList() {
 
               <button
                 onClick={() => setSelectedClient(cliente)}
-                className="w-full h-[36px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[12px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors"
+                className="w-full px-4 py-2 min-h-[36px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[12px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap box-border"
               >
                 Ver perfil
               </button>

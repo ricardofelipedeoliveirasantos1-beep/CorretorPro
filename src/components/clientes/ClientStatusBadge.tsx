@@ -29,7 +29,7 @@ export function ClientStatusBadge({ status, className = '' }: ClientStatusBadgeP
 
   return (
     <div className={cn(
-      "inline-flex items-center justify-center min-w-[140px] h-[32px] px-3 rounded-[8px] border text-[11px] font-bold uppercase tracking-wider",
+      "inline-flex items-center justify-center px-4 py-2 min-w-[150px] min-h-[34px] rounded-[8px] border text-[11px] font-bold uppercase tracking-wider whitespace-nowrap box-border",
       colorClasses,
       className
     )}>

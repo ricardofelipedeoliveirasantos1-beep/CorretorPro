@@ -104,12 +104,12 @@ export function LeadsList() {
                   <p className="text-[12px] text-[#64748B] mt-0.5">{lead.date}</p>
                 </td>
                 <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
-                  <span className={cn("px-3 py-1.5 rounded-[8px] text-[11px] font-bold border tracking-wider uppercase", getStatusColor(lead.status))}>
+                  <span className={cn("inline-flex items-center justify-center px-4 py-2 min-w-[130px] rounded-[8px] text-[11px] font-bold border tracking-wider uppercase whitespace-nowrap box-border", getStatusColor(lead.status))}>
                     {lead.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right align-middle border-y border-r border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E] rounded-r-xl">
-                  <button className="px-4 py-1.5 bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[11px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap">
+                  <button className="px-4 py-2 min-w-[120px] min-h-[34px] inline-flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[11px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap box-border">
                     Ver detalhes
                   </button>
                 </td>
@@ -128,7 +128,7 @@ export function LeadsList() {
                 <h3 className="font-bold text-[#0F172A] dark:text-[#F8FAFC]">{lead.name}</h3>
                 <p className="text-sm text-[#475569] dark:text-[#94A3B8] mt-0.5">{lead.phone}</p>
               </div>
-              <span className={cn("px-2.5 py-1.5 rounded-[8px] text-[10px] font-bold border tracking-wider uppercase", getStatusColor(lead.status))}>
+              <span className={cn("inline-flex items-center justify-center px-3 py-2 min-w-[110px] rounded-[8px] text-[10px] font-bold border tracking-wider uppercase whitespace-nowrap box-border", getStatusColor(lead.status))}>
                 {lead.status}
               </span>
             </div>
@@ -136,7 +136,7 @@ export function LeadsList() {
               <p className="text-[13px] text-[#475569] dark:text-[#CBD5E1]"><span className="font-semibold">Interesse:</span> {lead.interest}</p>
               <p className="text-[13px] text-[#475569] dark:text-[#CBD5E1] mt-1"><span className="font-semibold">Entrada:</span> {lead.date}</p>
             </div>
-            <button className="w-full py-2 bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[12px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors">
+            <button className="w-full px-4 py-2 min-h-[36px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[12px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap box-border">
               Detalhes
             </button>
           </div>
