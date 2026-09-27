@@ -75,7 +75,7 @@ export function RecentPropertiesCarousel({ properties }: Props) {
           <button 
             onClick={scrollLeft}
             aria-label="Imóveis anteriores"
-            className="absolute left-[-10px] md:left-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-[rgba(25,146,255,0.3)] shadow-md text-gray-700 dark:text-white rounded-full p-2 opacity-0 md:group-hover:opacity-100 transition-opacity disabled:opacity-30 flex items-center justify-center"
+            className="absolute left-[-10px] md:left-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-[#071C30] border border-[#168BFF] dark:border-[rgba(0,180,255,0.9)] shadow-[0_4px_12px_rgba(0,120,255,0.15)] dark:shadow-[0_0_8px_rgba(0,174,255,0.4)] text-[#168BFF] dark:text-[#00B4FF] rounded-full p-2 opacity-0 md:group-hover:opacity-100 transition-all disabled:opacity-30 flex items-center justify-center hover:scale-110"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -100,10 +100,10 @@ export function RecentPropertiesCarousel({ properties }: Props) {
                 <Link 
                   to={`/imoveis/${property.id}`}
                   key={property.id}
-                  className="snap-start flex-none w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] flex flex-col bg-white dark:bg-[#11233F] border border-gray-200 dark:border-[rgba(255,255,255,0.05)] rounded-[16px] overflow-hidden hover:shadow-lg dark:hover:border-[rgba(25,146,255,0.4)] transition-all duration-300"
+                  className="snap-start flex-none w-[88%] sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] xl:w-[calc(25%-12px)] flex flex-col bg-white dark:bg-[#071C30] border border-[#168BFF] dark:border-[rgba(0,180,255,0.9)] rounded-[16px] overflow-hidden shadow-[0_4px_16px_rgba(0,120,255,0.12)] dark:shadow-[0_0_8px_rgba(0,174,255,0.35),0_0_16px_rgba(0,174,255,0.18)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_rgba(0,120,255,0.16)] dark:hover:shadow-[0_0_12px_rgba(0,174,255,0.5),0_0_20px_rgba(0,174,255,0.3)] transition-all duration-300"
                 >
                   {/* Image */}
-                  <div className="relative h-[150px] w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
+                  <div className="relative h-[140px] md:h-[160px] xl:h-[180px] w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                     {coverPhoto ? (
                       <img src={coverPhoto.url} alt={property.title} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
@@ -112,74 +112,42 @@ export function RecentPropertiesCarousel({ properties }: Props) {
                         <span className="text-xs font-medium">Sem foto</span>
                       </div>
                     )}
-                    
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-3.5 md:p-4 flex flex-col flex-1">
+                    <h3 className="font-bold text-[#0F172A] dark:text-white text-[15px] md:text-[16px] line-clamp-2 leading-snug min-h-[42px] md:min-h-[45px]">
+                      {property.title}
+                    </h3>
+
                     {/* Badges Overlay */}
-                    <div className="absolute top-3 left-3 flex gap-2">
+                    <div className="flex flex-wrap gap-2 mt-2">
                       <span className={cn(
-                        "px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white",
-                        property.purpose === 'Venda' ? "bg-green-600" : "bg-orange-500"
+                        "px-2.5 py-1 rounded-[6px] text-[10px] font-bold uppercase tracking-wider text-white",
+                        property.purpose === 'Venda' ? "bg-[#10B981] dark:shadow-[0_0_6px_rgba(16,185,129,0.5)]" : "bg-[#F97316] dark:shadow-[0_0_6px_rgba(249,115,22,0.5)]"
                       )}>
                         {property.purpose}
                       </span>
                       {property.status && (
                         <span className={cn(
-                          "px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white",
-                          property.status === 'Disponível' ? "bg-teal-500" :
-                          property.status === 'Negociando' ? "bg-yellow-500 text-yellow-900" :
-                          property.status === 'Vendido' ? "bg-gray-600" :
-                          "bg-purple-500"
+                          "px-2.5 py-1 rounded-[6px] text-[10px] font-bold uppercase tracking-wider text-white",
+                          property.status === 'Disponível' ? "bg-[#06B6D4] dark:shadow-[0_0_6px_rgba(6,182,212,0.5)]" :
+                          property.status === 'Indisponível' ? "bg-[#EF4444] dark:shadow-[0_0_6px_rgba(239,68,68,0.5)]" :
+                          property.status === 'Vendido' ? "bg-[#475569] dark:shadow-[0_0_6px_rgba(71,85,105,0.5)]" :
+                          property.status === 'Negociando' ? "bg-[#F59E0B] text-white dark:shadow-[0_0_6px_rgba(245,158,11,0.5)]" :
+                          "bg-[#8B5CF6] dark:shadow-[0_0_6px_rgba(139,92,246,0.5)]"
                         )}>
                           {property.status}
                         </span>
                       )}
                     </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-[15px] line-clamp-2 leading-tight min-h-[38px]">
-                      {property.title}
-                    </h3>
                     
-                    {property.address?.neighborhood && (
-                      <p className="flex items-center text-gray-500 dark:text-gray-400 text-[12px] mt-1.5 truncate">
-                        <MapPin className="w-3 h-3 mr-1 shrink-0" />
-                        {property.address.neighborhood} {property.address.city ? `• ${property.address.city}` : ''}
-                      </p>
-                    )}
-
-                    {/* Features Row */}
-                    <div className="flex items-center gap-3 mt-3 text-gray-600 dark:text-gray-300 text-[13px] font-medium">
-                      {property.features?.bedrooms > 0 && (
-                        <div className="flex items-center gap-1" title={`${property.features.bedrooms} quartos`}>
-                          <BedDouble className="w-4 h-4 text-gray-400" />
-                          <span>{property.features.bedrooms}</span>
-                        </div>
-                      )}
-                      {property.features?.bathrooms > 0 && (
-                        <div className="flex items-center gap-1" title={`${property.features.bathrooms} banheiros`}>
-                          <Bath className="w-4 h-4 text-gray-400" />
-                          <span>{property.features.bathrooms}</span>
-                        </div>
-                      )}
-                      {property.features?.parkingSpaces > 0 && (
-                        <div className="flex items-center gap-1" title={`${property.features.parkingSpaces} vagas`}>
-                          <Car className="w-4 h-4 text-gray-400" />
-                          <span>{property.features.parkingSpaces}</span>
-                        </div>
-                      )}
-                      {property.features?.totalArea > 0 && (
-                        <div className="flex items-center gap-1 ml-auto text-gray-500 dark:text-gray-400 text-[12px]">
-                          <span>{property.features.totalArea} m²</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mt-auto pt-4 flex items-end justify-between">
+                    <div className="mt-3.5 flex items-end justify-between">
                       <div>
                         {price ? (
-                          <div className="font-bold text-[18px] text-[#0F172A] dark:text-white leading-none">
+                          <div className="font-bold text-[18px] md:text-[20px] text-[#0F172A] dark:text-white leading-none">
                             {formatCurrency(price)}
+                            {property.purpose === 'Aluguel' && <span className="text-[13px] text-gray-500 dark:text-[#8898B0] font-medium ml-1">/ mês</span>}
                           </div>
                         ) : (
                           <div className="font-bold text-[14px] text-gray-500 dark:text-gray-400">
@@ -187,8 +155,45 @@ export function RecentPropertiesCarousel({ properties }: Props) {
                           </div>
                         )}
                       </div>
-                      <span className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
-                        {getRelativeTime(property.createdAt)}
+                    </div>
+
+                    {property.address?.neighborhood && (
+                      <p className="flex items-center text-gray-500 dark:text-[#8898B0] text-[13px] mt-2.5 line-clamp-2">
+                        <MapPin className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                        {property.address.neighborhood} {property.address.city ? `• ${property.address.city}` : ''}
+                      </p>
+                    )}
+
+                    {/* Features Row */}
+                    <div className="flex items-center gap-3.5 mt-2.5 text-gray-600 dark:text-[#B8C4D9] text-[13px] font-medium">
+                      {property.features?.bedrooms > 0 && (
+                        <div className="flex items-center gap-1.5" title={`${property.features.bedrooms} quartos`}>
+                          <BedDouble className="w-4 h-4 text-gray-400" />
+                          <span>{property.features.bedrooms}</span>
+                        </div>
+                      )}
+                      {property.features?.bathrooms > 0 && (
+                        <div className="flex items-center gap-1.5" title={`${property.features.bathrooms} banheiros`}>
+                          <Bath className="w-4 h-4 text-gray-400" />
+                          <span>{property.features.bathrooms}</span>
+                        </div>
+                      )}
+                      {property.features?.parkingSpaces > 0 && (
+                        <div className="flex items-center gap-1.5" title={`${property.features.parkingSpaces} vagas`}>
+                          <Car className="w-4 h-4 text-gray-400" />
+                          <span>{property.features.parkingSpaces}</span>
+                        </div>
+                      )}
+                      {property.features?.totalArea > 0 && (
+                        <div className="flex items-center gap-1.5 ml-auto text-gray-500 dark:text-[#8898B0] text-[12px]">
+                          <span>{property.features.totalArea} m²</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-auto pt-3.5">
+                      <span className="text-[12px] text-gray-400 dark:text-[#64748B] font-medium flex items-center">
+                        📅 {getRelativeTime(property.createdAt)}
                       </span>
                     </div>
                   </div>
@@ -201,7 +206,7 @@ export function RecentPropertiesCarousel({ properties }: Props) {
           <button 
             onClick={scrollRight}
             aria-label="Próximos imóveis"
-            className="absolute right-[-10px] md:right-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-[rgba(25,146,255,0.3)] shadow-md text-gray-700 dark:text-white rounded-full p-2 opacity-0 md:group-hover:opacity-100 transition-opacity disabled:opacity-30 flex items-center justify-center"
+            className="absolute right-[-10px] md:right-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-[#071C30] border border-[#168BFF] dark:border-[rgba(0,180,255,0.9)] shadow-[0_4px_12px_rgba(0,120,255,0.15)] dark:shadow-[0_0_8px_rgba(0,174,255,0.4)] text-[#168BFF] dark:text-[#00B4FF] rounded-full p-2 opacity-0 md:group-hover:opacity-100 transition-all disabled:opacity-30 flex items-center justify-center hover:scale-110"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
