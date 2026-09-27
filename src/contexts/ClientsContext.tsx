@@ -6,6 +6,7 @@ interface ClientsContextData {
   clients: typeof mockClients;
   addClient: (client: typeof mockClients[0]) => void;
   updateClient: (client: typeof mockClients[0]) => void;
+  deleteClient: (clientId: number) => { success: boolean, message?: string };
 }
 
 const ClientsContext = createContext<ClientsContextData>({} as ClientsContextData);
@@ -43,8 +44,30 @@ export function ClientsProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const deleteClient = (clientId: number) => {
+    const savedDeals = localStorage.getItem('corretorpro_deals');
+    if (savedDeals) {
+      try {
+        const deals = JSON.parse(savedDeals);
+        if (Array.isArray(deals) && deals.some(d => d.clientId === clientId)) {
+          return { success: false, message: 'Este cliente possui negócios vinculados e não pode ser excluído enquanto esses registros existirem.' };
+        }
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+    
+    setClients(prev => {
+      const updated = prev.filter(c => c.id !== clientId);
+      localStorage.setItem('corretorpro_clients', JSON.stringify(updated));
+      return updated;
+    });
+    
+    return { success: true };
+  };
+
   return (
-    <ClientsContext.Provider value={{ clients, addClient, updateClient }}>
+    <ClientsContext.Provider value={{ clients, addClient, updateClient, deleteClient }}>
       {children}
     </ClientsContext.Provider>
   );

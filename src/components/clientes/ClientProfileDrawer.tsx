@@ -11,6 +11,7 @@ interface ClientProfileDrawerProps {
 }
 
 import { ClientStatusBadge } from './ClientStatusBadge'
+import { useClients } from '../../contexts/ClientsContext'
 const formatDate = (isoString?: string) => {
   if (!isoString) return '';
   const date = new Date(isoString);
@@ -24,15 +25,42 @@ const formatTime = (isoString?: string) => {
 }
 
 export function ClientProfileDrawer({ isOpen, onClose, client, onSave }: ClientProfileDrawerProps) {
+  const { deleteClient } = useClients();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(client || {});
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     setFormData(client || {});
     setIsEditing(false);
+    setShowDeleteConfirm(false);
   }, [client, isOpen]);
+
+  const handleClose = () => {
+    if (isEditing) {
+      const isDirty = JSON.stringify(formData) !== JSON.stringify(client);
+      if (isDirty) {
+        if (!window.confirm('Existem alterações não salvas. Deseja realmente fechar?')) {
+          return;
+        }
+      }
+    }
+    onClose();
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isEditing, formData, client]);
 
   if (!isOpen || !client) return null;
 
@@ -98,8 +126,25 @@ export function ClientProfileDrawer({ isOpen, onClose, client, onSave }: ClientP
     });
     setIsEditing(false);
     setShowError(false);
+    setSuccessMessage('Cliente atualizado com sucesso.');
     setShowSuccess(true);
   }
+
+  const handleDelete = () => {
+    const result = deleteClient(client.id);
+    if (!result.success) {
+      setErrorMessage(result.message || 'Não foi possível excluir o cliente.');
+      setShowError(true);
+      setShowDeleteConfirm(false);
+    } else {
+      setSuccessMessage('Cliente excluído com sucesso.');
+      setShowSuccess(true);
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    }
+  }
+
 
   const handleCancel = () => {
     setFormData(client);
@@ -113,13 +158,16 @@ export function ClientProfileDrawer({ isOpen, onClose, client, onSave }: ClientP
   const readOnlyValue = "text-[#0F172A] dark:text-[#F8FAFC] text-[15px] font-medium bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] px-4 py-2 rounded-[8px] border border-transparent";
 
   return (
-    <div className="fixed inset-0 z-[100] flex justify-end bg-black/60 backdrop-blur-sm transition-opacity">
-      <div className="bg-white dark:bg-[#06152B] w-full max-w-[600px] h-full shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-0 overflow-hidden">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-sm p-0 sm:p-6 transition-opacity" onClick={handleClose}>
+      <div 
+        className="bg-white dark:bg-[#06152B] w-full h-full sm:h-[90vh] sm:max-h-[850px] sm:max-w-[1100px] sm:rounded-[16px] shadow-2xl flex flex-col overflow-hidden border border-transparent dark:border-[#1685FF]/20"
+        onClick={e => e.stopPropagation()}
+      >
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0] dark:border-[rgba(255,255,255,0.05)] bg-[#F8FAFC] dark:bg-[#0A1E39]">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0] dark:border-[rgba(255,255,255,0.05)] bg-white dark:bg-[#06152B]">
           <h2 className="text-[18px] font-bold text-[#0F172A] dark:text-white">Perfil do Cliente</h2>
-          <button onClick={onClose} className="p-2 text-[#64748B] hover:text-[#0F172A] dark:text-[#94A3B8] dark:hover:text-white transition-colors rounded-full hover:bg-gray-200 dark:hover:bg-[rgba(255,255,255,0.1)]">
+          <button onClick={handleClose} className="p-2 text-[#64748B] hover:text-[#0F172A] dark:text-[#94A3B8] dark:hover:text-white transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.1)]">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -129,16 +177,16 @@ export function ClientProfileDrawer({ isOpen, onClose, client, onSave }: ClientP
 
           <InlineFeedback
             type="error"
-            message="Nome e telefone são obrigatórios."
+            message={errorMessage || "Nome e telefone são obrigatórios."}
             visible={showError}
-            duration={3000}
+            duration={4000}
             onClose={() => setShowError(false)}
           />
           <InlineFeedback
             type="success"
-            message="Cliente atualizado com sucesso."
+            message={successMessage}
             visible={showSuccess}
-            duration={1500}
+            duration={2000}
             onClose={() => setShowSuccess(false)}
           />
 
@@ -354,31 +402,68 @@ export function ClientProfileDrawer({ isOpen, onClose, client, onSave }: ClientP
         </div>
 
         {/* Footer Actions */}
-        <div className="p-5 border-t border-[#E2E8F0] dark:border-[rgba(255,255,255,0.05)] bg-white dark:bg-[#0A1E39] shrink-0">
+        <div className="sticky bottom-0 z-10 p-5 border-t border-[#E2E8F0] dark:border-[rgba(255,255,255,0.05)] bg-white dark:bg-[#06152B] shrink-0">
           {!isEditing ? (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-[#1685FF] text-white rounded-[10px] font-bold hover:bg-[#005CE6] transition-colors"
-            >
-              <Edit2 className="w-4 h-4" />
-              Editar Perfil
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="w-full sm:w-auto px-8 py-3 bg-[#1685FF] text-white rounded-[8px] font-bold hover:bg-[#005CE6] transition-colors flex items-center justify-center gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
+                Editar Perfil
+              </button>
+            </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleCancel}
-                className="flex-1 flex items-center justify-center gap-2 py-3 border border-[#E2E8F0] dark:border-[rgba(255,255,255,0.1)] text-[#475569] dark:text-[#CBD5E1] rounded-[10px] font-bold hover:bg-gray-50 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
-              >
-                <XCircle className="w-4 h-4" />
-                Cancelar
-              </button>
-              <button
-                onClick={handleSave}
-                className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#10B981] text-white rounded-[10px] font-bold hover:bg-[#059669] transition-colors"
-              >
-                <Save className="w-4 h-4" />
-                Salvar Alterações
-              </button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="w-full sm:w-auto relative">
+                {showDeleteConfirm ? (
+                  <div className="flex flex-col sm:flex-row items-center gap-2 bg-[#FEF2F2] dark:bg-[#450a0a] p-2 rounded-[8px] border border-[#FECACA] dark:border-[#7f1d1d] w-full sm:w-auto">
+                    <span className="text-[13px] text-[#991B1B] dark:text-[#fca5a5] font-semibold px-2">
+                      Tem certeza?
+                    </span>
+                    <div className="flex w-full sm:w-auto gap-2">
+                      <button
+                        onClick={() => setShowDeleteConfirm(false)}
+                        className="flex-1 sm:flex-none px-4 py-2 bg-white dark:bg-transparent border border-[#FECACA] dark:border-[#7f1d1d] text-[#991B1B] dark:text-[#fca5a5] rounded-[6px] font-bold text-[13px] hover:bg-gray-50 dark:hover:bg-[#7f1d1d]/20 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        className="flex-1 sm:flex-none px-4 py-2 bg-[#DC2626] text-white rounded-[6px] font-bold text-[13px] hover:bg-[#B91C1C] transition-colors"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="w-full sm:w-auto px-6 py-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-[8px] font-bold hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
+                  >
+                    Excluir Cliente
+                  </button>
+                )}
+              </div>
+              
+              {!showDeleteConfirm && (
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                  <button
+                    onClick={handleCancel}
+                    className="w-full sm:w-auto px-6 py-3 border border-[#E2E8F0] dark:border-[rgba(255,255,255,0.1)] text-[#475569] dark:text-[#CBD5E1] rounded-[8px] font-bold hover:bg-gray-50 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors flex items-center justify-center gap-2"
+                  >
+                    <XCircle className="w-4 h-4" />
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="w-full sm:w-auto px-8 py-3 bg-[#10B981] text-white rounded-[8px] font-bold hover:bg-[#059669] transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    Salvar Alterações
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
