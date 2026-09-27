@@ -7,6 +7,7 @@ import { useClients } from '../../../contexts/ClientsContext'
 import { ClientFormModal } from '../../../components/clientes/ClientFormModal'
 import { ClientsFilterModal } from '../../../components/clientes/ClientsFilterModal'
 import { ClientProfileDrawer } from '../../../components/clientes/ClientProfileDrawer'
+import { ClientStatusBadge } from '../../../components/clientes/ClientStatusBadge'
 
 const formatDate = (isoString?: string) => {
   if (!isoString) return '';
@@ -20,15 +21,7 @@ const formatTime = (isoString?: string) => {
   return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Ativo': return 'bg-[rgba(0,209,178,0.1)] text-[#00D1B2] border-[#00D1B2]'
-    case 'Em negociação': return 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B] border-[#F59E0B]'
-    case 'Com negócio fechado': return 'bg-[rgba(16,185,129,0.1)] text-[#10B981] border-[#10B981]'
-    case 'Inativo': return 'bg-[rgba(239,68,68,0.1)] text-[#EF4444] border-[#EF4444]'
-    default: return 'bg-gray-100 text-gray-600 border-gray-300'
-  }
-}
+
 
 const FILTER_OPTIONS = [
   {
@@ -303,56 +296,51 @@ export function ClientesList() {
         </div>
       )}
 
-      {/* Listagem Desktop (Tabela pura sem wrapper overflow-hidden problemático) */}
+      {/* Listagem Desktop (Tabela com rows separadas) */}
       {paginatedClients.length > 0 && (
-        <div className="hidden lg:block w-full rounded-[12px] shadow-sm border border-[#E2E8F0] dark:border-[rgba(25,146,255,0.1)] bg-white dark:bg-[#081C36]">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[#F8FAFC] dark:bg-[#0B2545] border-b border-[#E2E8F0] dark:border-[rgba(25,146,255,0.1)] text-[#475569] dark:text-[#CBD5E1] text-[12px] font-bold uppercase tracking-wider">
-                <th className="px-6 py-4 rounded-tl-[12px]">Cliente / Contato</th>
-                <th className="px-6 py-4">Interesse Principal</th>
-                <th className="px-6 py-4">Responsável</th>
-                <th className="px-6 py-4">Data e Hora</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-center rounded-tr-[12px]">Ações</th>
+        <div className="hidden lg:block w-full">
+          <table className="w-full text-left border-separate border-spacing-y-3">
+            <thead className="text-[#475569] dark:text-[#CBD5E1]">
+              <tr className="text-[12px] font-bold uppercase tracking-wider">
+                <th className="px-6 py-2">Cliente / Contato</th>
+                <th className="px-6 py-2">Interesse Principal</th>
+                <th className="px-6 py-2">Responsável</th>
+                <th className="px-6 py-2">Data e Hora</th>
+                <th className="px-6 py-2 text-center">Status</th>
+                <th className="px-6 py-2 text-center">Ações</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-[#081C36]">
-              {paginatedClients.map((cliente, index) => (
-                <tr key={cliente.id} className={cn(
-                  "border-[#E2E8F0] dark:border-[rgba(25,146,255,0.1)] hover:bg-gray-50 dark:hover:bg-[rgba(25,146,255,0.02)] transition-colors",
-                  index !== paginatedClients.length - 1 ? "border-b" : ""
-                )}>
-                  <td className="px-6 py-4">
+            <tbody>
+              {paginatedClients.map((cliente) => (
+                <tr key={cliente.id} className="group bg-white dark:bg-[#111C2E] transition-all shadow-[0_1px_3px_rgba(0,0,0,0.05),0_0_0_1px_rgba(22,133,255,0.2)] dark:shadow-none hover:shadow-[0_4px_12px_rgba(22,133,255,0.08)]">
+                  <td className="px-6 py-4 align-middle border-y border-l border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E] rounded-l-xl">
                     <p className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-[15px]">{cliente.name}</p>
                     <p className="text-sm text-[#475569] dark:text-[#94A3B8] mt-0.5">{cliente.phone}</p>
                     {cliente.email && <p className="text-[12px] text-[#64748B] dark:text-[#64748B]">{cliente.email}</p>}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                     <p className="text-[14px] text-[#0F172A] dark:text-[#CBD5E1] font-semibold">{cliente.interestType} - {cliente.propertyInterest}</p>
                     <p className="text-[13px] text-[#64748B] dark:text-[#94A3B8] mt-0.5">{cliente.neighborhood}, {cliente.city}</p>
                     {cliente.budget && <p className="text-[12px] text-[#475569] dark:text-[#64748B] font-medium mt-1">Orçamento: {cliente.budget}{cliente.interestType === 'Aluguel' ? ' / Mês' : ''}</p>}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                     <div className="flex flex-col">
                       <span className="font-semibold text-[#0F172A] dark:text-[#F8FAFC] text-sm">{cliente.responsible}</span>
                       {cliente.origin && <span className="text-[12px] text-[#64748B] dark:text-[#94A3B8] mt-0.5">Origem: {cliente.origin}</span>}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                     <p className="text-[14px] text-[#0F172A] dark:text-[#CBD5E1] font-medium">{formatDate(cliente.createdAt)}</p>
                     <p className="text-[12px] text-[#64748B] dark:text-[#94A3B8] mt-0.5">às {formatTime(cliente.createdAt)}</p>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={cn("px-3 py-1.5 rounded-full text-[11px] font-bold border tracking-wide whitespace-nowrap", getStatusColor(cliente.status))}>
-                      {cliente.status}
-                    </span>
+                  <td className="px-6 py-4 align-middle text-center border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
+                    <ClientStatusBadge status={cliente.status} />
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 align-middle border-y border-r border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E] rounded-r-xl">
                     <div className="flex justify-center items-center h-full w-full">
                       <button
                         onClick={() => setSelectedClient(cliente)}
-                        className="w-full max-w-[110px] h-[36px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] hover:text-white font-semibold text-[13px] rounded-[10px] hover:bg-[#1685FF] transition-colors whitespace-nowrap"
+                        className="w-full max-w-[110px] h-[32px] flex items-center justify-center bg-[#005CE6] dark:bg-[#1685FF] text-white font-bold text-[11px] uppercase tracking-wider rounded-full hover:opacity-90 transition-colors whitespace-nowrap"
                       >
                         Ver perfil
                       </button>
@@ -369,15 +357,15 @@ export function ClientesList() {
       {paginatedClients.length > 0 && (
         <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
           {paginatedClients.map(cliente => (
-            <div key={cliente.id} className="bg-white dark:bg-[#081C36] border border-[#E2E8F0] dark:border-[rgba(25,146,255,0.1)] rounded-[12px] p-5 shadow-sm flex flex-col gap-4">
+            <div key={cliente.id} className="bg-white dark:bg-[#111C2E] border border-[#1685FF]/30 dark:border-[#24344D] shadow-[0_4px_12px_rgba(22,133,255,0.08)] dark:shadow-sm rounded-[12px] p-5 flex flex-col gap-4">
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
                   <h3 className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-[16px] leading-tight">{cliente.name}</h3>
                   <p className="text-[14px] text-[#475569] dark:text-[#94A3B8] mt-1">{cliente.phone}</p>
                 </div>
-                <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-bold border whitespace-nowrap shrink-0", getStatusColor(cliente.status))}>
-                  {cliente.status}
-                </span>
+              </div>
+              <div className="flex justify-start">
+                <ClientStatusBadge status={cliente.status} className="w-full sm:w-auto" />
               </div>
 
               <div className="bg-gray-50 dark:bg-[#0A1E39] p-3.5 rounded-[8px] flex flex-col gap-2">
@@ -403,7 +391,7 @@ export function ClientesList() {
 
               <button
                 onClick={() => setSelectedClient(cliente)}
-                className="w-full py-2.5 bg-[#EAF3FF] dark:bg-[rgba(25,146,255,0.1)] hover:bg-[#D4E7FF] dark:hover:bg-[rgba(25,146,255,0.15)] text-[#1685FF] font-bold rounded-[8px] text-[14px] transition-colors"
+                className="w-full h-[36px] flex items-center justify-center bg-[#005CE6] dark:bg-[#1685FF] text-white font-bold text-[12px] uppercase tracking-wider rounded-full hover:opacity-90 transition-colors"
               >
                 Ver perfil
               </button>

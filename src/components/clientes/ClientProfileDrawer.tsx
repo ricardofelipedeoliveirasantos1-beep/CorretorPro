@@ -10,16 +10,7 @@ interface ClientProfileDrawerProps {
   onSave: (updatedClient: any) => void;
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Ativo': return 'bg-[rgba(0,209,178,0.1)] text-[#00D1B2] border-[#00D1B2]'
-    case 'Em negociação': return 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B] border-[#F59E0B]'
-    case 'Com negócio fechado': return 'bg-[rgba(16,185,129,0.1)] text-[#10B981] border-[#10B981]'
-    case 'Inativo': return 'bg-[rgba(239,68,68,0.1)] text-[#EF4444] border-[#EF4444]'
-    default: return 'bg-gray-100 text-gray-600 border-gray-300'
-  }
-}
-
+import { ClientStatusBadge } from './ClientStatusBadge'
 const formatDate = (isoString?: string) => {
   if (!isoString) return '';
   const date = new Date(isoString);
@@ -160,9 +151,7 @@ export function ClientProfileDrawer({ isOpen, onClose, client, onSave }: ClientP
               <h3 className="text-xl font-bold text-[#0F172A] dark:text-white leading-tight">{client.name}</h3>
               <p className="text-[#64748B] dark:text-[#94A3B8] text-[14px] mt-1 mb-3">{client.email || 'Sem e-mail'}</p>
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                <span className={cn("px-3 py-1 rounded-full text-[12px] font-bold border", getStatusColor(client.status))}>
-                  {client.status}
-                </span>
+                <ClientStatusBadge status={client.status} />
               </div>
             </div>
           </div>

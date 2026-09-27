@@ -6,6 +6,7 @@ import { DashboardCard } from '../../components/dashboard/DashboardCard'
 import { RecentPropertiesCarousel } from '../../components/dashboard/RecentPropertiesCarousel'
 import { cn } from '../../utils/cn'
 import { useClients } from '../../contexts/ClientsContext'
+import { ClientStatusBadge } from '../../components/clientes/ClientStatusBadge'
 import { useMemo, useState, useEffect } from 'react'
 
 function getInitials(name: string) {
@@ -196,20 +197,10 @@ export function Dashboard() {
                     </div>
                     <div className="flex items-center justify-between mt-0.5">
                       <p className="text-[12.5px] text-[#475569] dark:text-[#B8C4D9] truncate pr-2">Interesse: {lead.propertyInterest || lead.interestType}</p>
-                      <div className={cn(
-                        "px-2.5 py-[2px] rounded-full text-[10px] font-semibold shrink-0 border",
-                        lead.status === 'Novo'
-                          ? "text-[#00D1B2] border-[#00D1B2] bg-[rgba(0,209,178,0.1)]"
-                          : lead.status === 'Em negociação'
-                          ? "text-[#F59E0B] border-[#F59E0B] bg-[rgba(245,158,11,0.1)]"
-                          : lead.status === 'Com negócio fechado'
-                          ? "text-[#10B981] border-[#10B981] bg-[rgba(16,185,129,0.1)]"
-                          : lead.status === 'Inativo'
-                          ? "text-[#EF4444] border-[#EF4444] bg-[rgba(239,68,68,0.1)]"
-                          : "text-[#B05CFF] border-[#B05CFF] bg-[rgba(176,92,255,0.1)]"
-                      )}>
-                        {lead.status}
-                      </div>
+                      <ClientStatusBadge 
+                        status={lead.status} 
+                        className="h-[22px] min-w-[110px] text-[9px] px-2 shrink-0" 
+                      />
                     </div>
                   </div>
                 </div>
