@@ -209,8 +209,6 @@ export function Dashboard() {
             ))}
           </div>
         </DashboardCard>
-
-        </DashboardCard>
       </div>
     </div>
   )
