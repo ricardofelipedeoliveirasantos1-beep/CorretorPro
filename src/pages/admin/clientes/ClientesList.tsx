@@ -25,12 +25,6 @@ const formatTime = (isoString?: string) => {
 
 const FILTER_OPTIONS = [
   {
-    label: 'Todos',
-    value: '',
-    activeClass: 'bg-[#1685FF]/10 text-[#1685FF] border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/50 shadow-[0_2px_8px_rgba(22,133,255,0.15)] font-bold',
-    inactiveClass: 'bg-transparent text-[#64748B] border-[#E2E8F0] dark:text-[#94A3B8] dark:border-[rgba(25,146,255,0.15)] hover:bg-[#1685FF]/5 dark:hover:bg-[rgba(25,146,255,0.05)]'
-  },
-  {
     label: 'Ativos',
     value: 'Ativo',
     activeClass: 'bg-[#10B981]/10 text-[#059669] border-[#10B981]/30 dark:bg-[#10B981]/20 dark:text-[#34D399] dark:border-[#10B981]/50 shadow-[0_2px_8px_rgba(16,185,129,0.15)] font-bold',
@@ -65,7 +59,7 @@ export function ClientesList() {
   const [selectedClient, setSelectedClient] = useState<any>(null)
 
   const [advancedFilters, setAdvancedFilters] = useState({
-    status: '',
+    status: 'Ativo',
     responsible: '',
     city: '',
     neighborhood: '',
@@ -265,14 +259,13 @@ export function ClientesList() {
 
       {/* Filtros Rápidos (Pills/Tabs) - Sincronizado com advancedFilters.status */}
       <div className="grid grid-cols-2 md:flex md:flex-row md:flex-wrap gap-2 md:gap-3 lg:gap-[14px] mb-6 w-full">
-        {FILTER_OPTIONS.map((opt, i) => (
+        {FILTER_OPTIONS.map((opt) => (
           <button
             key={opt.label}
             onClick={() => setAdvancedFilters(prev => ({ ...prev, status: opt.value }))}
             className={cn(
               "flex items-center justify-center border text-center transition-all duration-300",
               "w-full md:w-auto md:flex-1",
-              i === 4 ? "col-span-2 md:col-span-1" : "",
               "h-[40px] lg:h-[44px]",
               "px-3 md:px-4 lg:px-6",
               "rounded-[8px] whitespace-nowrap box-border",
@@ -305,7 +298,7 @@ export function ClientesList() {
                 <th className="px-6 py-2">Cliente / Contato</th>
                 <th className="px-6 py-2">Interesse Principal</th>
                 <th className="px-6 py-2">Responsável</th>
-                <th className="px-6 py-2">Data e Hora</th>
+                <th className="px-6 py-2 whitespace-nowrap">Data e Hora</th>
                 <th className="px-6 py-2 text-center">Status</th>
                 <th className="px-6 py-2 text-center">Ações</th>
               </tr>
@@ -319,8 +312,10 @@ export function ClientesList() {
                     {cliente.email && <p className="text-[12px] text-[#64748B] dark:text-[#64748B]">{cliente.email}</p>}
                   </td>
                   <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
-                    <p className="text-[14px] text-[#0F172A] dark:text-[#CBD5E1] font-semibold">{cliente.interestType} - {cliente.propertyInterest}</p>
-                    <p className="text-[13px] text-[#64748B] dark:text-[#94A3B8] mt-0.5">{cliente.neighborhood}, {cliente.city}</p>
+                    <p className="text-[14px] text-[#0F172A] dark:text-[#CBD5E1] font-semibold">
+                      {cliente.interestType} {cliente.propertyInterest ? `- ${cliente.propertyInterest.split(',')[0].trim()}` : ''}
+                    </p>
+                    {cliente.neighborhood && <p className="text-[13px] text-[#64748B] dark:text-[#94A3B8] mt-0.5">{cliente.neighborhood}{cliente.city ? `, ${cliente.city}` : ''}</p>}
                     {cliente.budget && <p className="text-[12px] text-[#475569] dark:text-[#64748B] font-medium mt-1">Orçamento: {cliente.budget}{cliente.interestType === 'Aluguel' ? ' / Mês' : ''}</p>}
                   </td>
                   <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
@@ -371,7 +366,7 @@ export function ClientesList() {
               <div className="bg-gray-50 dark:bg-[#0A1E39] p-3.5 rounded-[8px] flex flex-col gap-2">
                 <div className="flex justify-between items-center">
                   <span className="text-[13px] text-[#475569] dark:text-[#94A3B8] font-medium">Interesse:</span>
-                  <span className="text-[13px] font-bold text-[#0F172A] dark:text-[#F8FAFC] text-right">{cliente.interestType} - {cliente.propertyInterest}</span>
+                  <span className="text-[13px] font-bold text-[#0F172A] dark:text-[#F8FAFC] text-right text-balance leading-tight">{cliente.interestType} {cliente.propertyInterest ? `- ${cliente.propertyInterest.split(',')[0].trim()}` : ''}</span>
                 </div>
                 {cliente.budget && (
                   <div className="flex justify-between items-center">

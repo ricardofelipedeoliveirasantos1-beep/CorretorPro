@@ -27,7 +27,7 @@ const getStatusColor = (status: string) => {
 }
 
 export function LeadsList() {
-  const [filter, setFilter] = useState('Todos')
+  const [filter, setFilter] = useState('Novos')
 
   return (
     <div className="flex flex-col h-full pt-4 lg:pt-6">
@@ -60,7 +60,7 @@ export function LeadsList() {
 
       {/* Filtros Rápidos (Pills) */}
       <div className="flex overflow-x-auto gap-2 pb-4 mb-2 [scrollbar-width:none]">
-        {['Todos', 'Novos', 'Em contato', 'Qualificados', 'Proposta', 'Convertidos', 'Perdidos'].map(f => (
+        {['Novos', 'Em contato', 'Qualificados', 'Proposta', 'Convertidos', 'Perdidos'].map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -83,8 +83,8 @@ export function LeadsList() {
             <tr className="text-[12px] font-semibold uppercase tracking-wider">
               <th className="px-6 py-2">Lead / Contato</th>
               <th className="px-6 py-2">Interesse</th>
-              <th className="px-6 py-2">Origem / Data</th>
-              <th className="px-6 py-2">Status</th>
+              <th className="px-6 py-2 whitespace-nowrap">Origem / Data</th>
+              <th className="px-6 py-2 text-center">Status</th>
               <th className="px-6 py-2 text-right">Ações</th>
             </tr>
           </thead>
@@ -97,7 +97,7 @@ export function LeadsList() {
                   <p className="text-[12px] text-[#64748B] dark:text-[#64748B]">{lead.email}</p>
                 </td>
                 <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
-                  <p className="text-sm text-[#0F172A] dark:text-[#CBD5E1] font-medium">{lead.interest}</p>
+                  <p className="text-sm text-[#0F172A] dark:text-[#CBD5E1] font-medium">{lead.interest.split(',')[0].trim()}</p>
                 </td>
                 <td className="px-6 py-4 align-middle border-y border-[#1685FF]/30 group-hover:border-[#1685FF]/60 dark:border-[#24344D] dark:group-hover:border-[#31435E]">
                   <p className="text-sm text-[#0F172A] dark:text-[#CBD5E1] font-semibold">{lead.origin}</p>
@@ -133,7 +133,7 @@ export function LeadsList() {
               </span>
             </div>
             <div className="bg-gray-50 dark:bg-[#0A1E39] p-3 rounded-[8px]">
-              <p className="text-[13px] text-[#475569] dark:text-[#CBD5E1]"><span className="font-semibold">Interesse:</span> {lead.interest}</p>
+              <p className="text-[13px] text-[#475569] dark:text-[#CBD5E1]"><span className="font-semibold">Interesse:</span> {lead.interest.split(',')[0].trim()}</p>
               <p className="text-[13px] text-[#475569] dark:text-[#CBD5E1] mt-1"><span className="font-semibold">Entrada:</span> {lead.date}</p>
             </div>
             <button className="w-full px-4 py-2 min-h-[36px] flex items-center justify-center bg-[#1685FF]/10 text-[#1685FF] border border-[#1685FF]/30 dark:bg-[#1685FF]/20 dark:text-[#60A5FA] dark:border-[#1685FF]/40 font-bold text-[12px] uppercase tracking-wider rounded-[8px] hover:bg-[#1685FF]/20 dark:hover:bg-[#1685FF]/30 transition-colors whitespace-nowrap box-border">
