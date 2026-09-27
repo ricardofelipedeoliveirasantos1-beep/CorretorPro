@@ -124,7 +124,6 @@ export function RecentPropertiesCarousel({ properties }: Props) {
                       {property.status && (
                         <span className={cn(
                           "px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white",
-                          property.status === 'Novo' ? "bg-blue-500" :
                           property.status === 'Disponível' ? "bg-teal-500" :
                           property.status === 'Negociando' ? "bg-yellow-500 text-yellow-900" :
                           property.status === 'Vendido' ? "bg-gray-600" :
