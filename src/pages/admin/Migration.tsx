@@ -22,7 +22,6 @@ export function Migration() {
   const [backupDone, setBackupDone] = useState(false);
   const [migrationDone, setMigrationDone] = useState(false);
   const [migratedCount, setMigratedCount] = useState(0);
-  const [failedCount, setFailedCount] = useState(0);
   const [migrationError, setMigrationError] = useState<string | null>(null);
 
   // Security checks
@@ -196,7 +195,6 @@ export function Migration() {
       });
 
       setMigratedCount(successCount);
-      setFailedCount(errCount);
       
       if (errCount > 0) {
         setMigrationError(`Falha ao migrar alguns registros. Sucesso: ${successCount}. Falhas: ${errCount}. Verifique o console.`);
