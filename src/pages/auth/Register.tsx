@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../../lib/supabase'
+import { auth } from '../../lib/firebase'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { useAuth } from '../../contexts/AuthContext'
@@ -23,11 +24,11 @@ export function Register() {
     const formData = new FormData(e.currentTarget)
     const firstName = formData.get('firstName') as string
     const lastName = formData.get('lastName') as string
+    const workspaceName = formData.get('workspaceName') as string
     const email = formData.get('email') as string
     const password = formData.get('password') as string
     const confirmPassword = formData.get('confirmPassword') as string
 
-    // Validações locais
     if (password.length < 6) {
       setError('A senha deve ter pelo menos 6 caracteres.')
       setIsLoading(false)
@@ -41,39 +42,32 @@ export function Register() {
     }
 
     if (isDemoEnv) {
-      // Bypass Supabase if demo mode is enabled
       signInDemo(email)
       navigate('/dashboard')
       return
     }
 
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          first_name: firstName,
-          last_name: lastName,
-        },
-      },
-    })
-
-    if (signUpError) {
-      if (signUpError.message.includes('User already registered')) {
-        setError('Este e-mail já está em uso.')
+    try {
+      if (workspaceName) {
+        sessionStorage.setItem('@futcrm:pending_workspace_name', workspaceName.trim());
+      }
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      await updateProfile(userCredential.user, {
+        displayName: `${firstName} ${lastName}`.trim()
+      })
+      navigate('/dashboard')
+    } catch (signUpError: any) {
+      console.error(signUpError)
+      if (signUpError.code === 'auth/email-already-in-use') {
+        setError('Este e-mail já possui uma conta.')
+      } else if (signUpError.code === 'auth/invalid-email') {
+        setError('Informe um e-mail válido.')
+      } else if (signUpError.code === 'auth/weak-password') {
+        setError('A senha deve ter pelo menos 6 caracteres.')
       } else {
         setError('Não foi possível concluir o cadastro. Tente novamente.')
       }
       setIsLoading(false)
-    } else {
-      if (data.session) {
-        // Se já retorna sessão, entra direto (confirmação desativada)
-        navigate('/dashboard')
-      } else {
-        // Se a confirmação de email estiver ativada no Supabase
-        setSuccess('Cadastro realizado! Verifique seu e-mail para confirmar a conta.')
-        setIsLoading(false)
-      }
     }
   }
 
@@ -119,6 +113,16 @@ export function Register() {
               disabled={isLoading}
             />
           </div>
+
+          <Input
+            id="workspaceName"
+            name="workspaceName"
+            type="text"
+            label="Nome da Imobiliária / CRM"
+            placeholder="Ex: Minha Imobiliária"
+            required
+            disabled={isLoading}
+          />
 
           <Input
             id="email"

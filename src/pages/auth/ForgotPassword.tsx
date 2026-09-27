@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { supabase } from '../../lib/supabase'
+import { auth } from '../../lib/firebase'
+import { sendPasswordResetEmail } from 'firebase/auth'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 
@@ -18,16 +19,12 @@ export function ForgotPassword() {
     const formData = new FormData(e.currentTarget)
     const email = formData.get('email') as string
 
-    // Aqui usamos redirectTo para o supabase redirecionar de volta para o app na rota de redefinir senha
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/redefinir-senha`,
-    })
-
-    if (error) {
-      setError('Não foi possível enviar o link de recuperação. Tente novamente.')
-    } else {
-      // Mensagem genérica por segurança para não vazar se o email existe ou não
+    try {
+      await sendPasswordResetEmail(auth, email)
       setSuccess('Se o e-mail existir em nossa base, você receberá um link de recuperação em instantes.')
+    } catch (err: any) {
+      console.error(err)
+      setError('Não foi possível enviar o link de recuperação. Tente novamente.')
     }
 
     setIsLoading(false)

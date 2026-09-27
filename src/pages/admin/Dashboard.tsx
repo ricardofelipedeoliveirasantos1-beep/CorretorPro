@@ -4,7 +4,7 @@ import { MetricCard } from '../../components/dashboard/MetricCard'
 import { DashboardCard } from '../../components/dashboard/DashboardCard'
 import { cn } from '../../utils/cn'
 import { useClients } from '../../contexts/ClientsContext'
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
 function getInitials(name: string) {
   return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
@@ -18,6 +18,36 @@ export function Dashboard() {
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
       .slice(0, 3);
   }, [clients]);
+
+  const [deals, setDeals] = useState<any[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('corretorpro_deals');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setDeals(parsed);
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  const closedDealsCount = useMemo(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    return deals.filter(d => {
+      if (d.status !== 'Fechado' || !d.closedAt) return false;
+      const closedDate = new Date(d.closedAt);
+      return closedDate.getMonth() === currentMonth && closedDate.getFullYear() === currentYear;
+    }).length;
+  }, [deals]);
+
+  const scheduledVisitsCount = useMemo(() => {
+    return deals.filter(d => d.stage === 'Visita' && d.status !== 'Fechado' && d.status !== 'Cancelado' && d.status !== 'Perdido').length;
+  }, [deals]);
 
   const getRelativeTime = (isoString?: string) => {
     if (!isoString) return '';
@@ -53,7 +83,7 @@ export function Dashboard() {
         />
         <MetricCard
           title="Visitas Agendadas"
-          value={mockDashboardMetrics.scheduledVisits}
+          value={scheduledVisitsCount > 0 ? scheduledVisitsCount : mockDashboardMetrics.scheduledVisits}
           indicator="↓ -1 esta semana"
           indicatorColor="#10B981"
           icon={<Calendar className="h-6 w-6" />}
@@ -61,7 +91,7 @@ export function Dashboard() {
         />
         <MetricCard
           title="Fechamentos (Mês)"
-          value={mockDashboardMetrics.closedDeals}
+          value={closedDealsCount > 0 ? closedDealsCount : mockDashboardMetrics.closedDeals}
           indicator="↑ +2 vs. mês anterior"
           indicatorColor="#10B981"
           icon={<DollarSign className="h-6 w-6" />}

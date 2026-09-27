@@ -17,10 +17,12 @@ import { LeadsList } from './pages/admin/leads/LeadsList'
 import { ClientesList } from './pages/admin/clientes/ClientesList'
 import { Agenda } from './pages/admin/agenda/Agenda'
 import { NegociosBoard } from './pages/admin/negocios/NegociosBoard'
+import { Comissao } from './pages/admin/comissao/Comissao'
 import { Relatorios } from './pages/admin/relatorios/Relatorios'
 import { Configuracoes } from './pages/admin/configuracoes/Configuracoes'
 import { LogoConfiguracoes } from './pages/admin/configuracoes/LogoConfiguracoes'
 import { AparenciaConfiguracoes } from './pages/admin/configuracoes/AparenciaConfiguracoes'
+import { Migration } from './pages/admin/Migration'
 
 import { PropertiesList } from './pages/admin/properties/PropertiesList'
 import { PropertyCreate } from './pages/admin/properties/PropertyCreate'
@@ -55,10 +57,12 @@ function App() {
             <Route path="/clientes" element={<ClientesList />} />
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/negocios" element={<NegociosBoard />} />
+            <Route path="/comissao" element={<Comissao />} />
             <Route path="/relatorios" element={<Relatorios />} />
             <Route path="/configuracoes" element={<Configuracoes />} />
             <Route path="/configuracoes/logo" element={<LogoConfiguracoes />} />
             <Route path="/configuracoes/aparencia" element={<AparenciaConfiguracoes />} />
+            <Route path="/admin/migration" element={<Migration />} />
 
             {/* Imóveis */}
             <Route path="/imoveis" element={<PropertiesList />} />

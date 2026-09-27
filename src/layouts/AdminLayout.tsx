@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Home, UserSquare2, CalendarDays, DollarSign, FileText, Settings, Globe, LogOut, Building2, Menu as MenuIcon, X } from 'lucide-react'
+import { Home, UserSquare2, CalendarDays, DollarSign, FileText, Settings, Globe, LogOut, Building2, Menu as MenuIcon, X, Percent } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { cn } from '../utils/cn'
 import { ProfileModal } from '../components/admin/ProfileModal'
@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Clientes', to: '/clientes', icon: UserSquare2 },
   { name: 'Agenda', to: '/agenda', icon: CalendarDays },
   { name: 'Negócios', to: '/negocios', icon: DollarSign },
+  { name: 'Comissão', to: '/comissao', icon: Percent },
   { name: 'Relatórios', to: '/relatorios', icon: FileText },
   { name: 'Meu Portal', to: '/meu-portal', icon: Globe },
   { name: 'Configurações', to: '/configuracoes', icon: Settings },
@@ -90,7 +91,7 @@ export function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC] dark:bg-[#06152B] transition-colors duration-300">
+    <div className="flex min-h-screen bg-[#F3F6FA] dark:bg-[#041426] transition-colors duration-300">
 
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
@@ -102,7 +103,7 @@ export function AdminLayout() {
 
       {/* Sidebar (Desktop & Mobile Drawer) */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-[260px] flex-col border-r border-[rgba(255,255,255,0.05)] dark:border-[#1E3048] bg-[#071A31] dark:bg-[#06152B] transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:flex shrink-0 shadow-2xl lg:shadow-lg dark:shadow-[0_0_40px_rgba(0,0,0,0.3)]",
+        "fixed inset-y-0 left-0 z-50 w-[260px] flex-col border-r border-[rgba(255,255,255,0.05)] dark:border-[#1E3048] bg-[#071A31] dark:bg-[#061B31] transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:flex shrink-0 shadow-2xl lg:shadow-lg dark:shadow-[0_0_40px_rgba(0,0,0,0.3)]",
         isMobileMenuOpen ? "translate-x-0 flex" : "-translate-x-full lg:translate-x-0 hidden lg:flex"
       )}>
         <div className="flex h-[80px] items-center justify-between px-6 shrink-0 border-b border-[rgba(255,255,255,0.05)] dark:border-[#1E3048]">
@@ -151,7 +152,7 @@ export function AdminLayout() {
       <div className="flex flex-1 flex-col pb-[64px] lg:pb-0 h-screen overflow-hidden relative">
 
         {/* Top header */}
-        <header className="flex shrink-0 items-center justify-between px-4 sm:px-6 lg:px-10 py-3 lg:py-4 bg-[#071A31] dark:bg-[#06152B] z-40 shadow-md border-b border-transparent dark:border-[rgba(25,146,255,0.05)] h-[60px] sm:h-[70px] lg:h-[80px] gap-4">
+        <header className="flex shrink-0 items-center justify-between px-4 sm:px-6 lg:px-10 py-3 lg:py-4 bg-[#071A31] dark:bg-[#061B31] z-40 shadow-md border-b border-transparent dark:border-[rgba(25,146,255,0.05)] h-[60px] sm:h-[70px] lg:h-[80px] gap-4">
 
           {/* Esquerda: Hambúrguer + Logo (Mobile) ou Saudação (Desktop) */}
           <div className="flex-1 flex items-center lg:items-start lg:flex-col gap-1 sm:gap-3 lg:gap-0">
@@ -214,14 +215,14 @@ export function AdminLayout() {
                 className="flex items-center gap-2 sm:gap-3 cursor-pointer pl-0 lg:pl-3 border-l-0 lg:border-l border-[rgba(255,255,255,0.1)] hover:opacity-80 transition-opacity"
               >
                 <div className="flex h-[36px] w-[36px] sm:h-[38px] sm:w-[38px] lg:h-[44px] lg:w-[44px] items-center justify-center rounded-full bg-[#1685FF] text-white font-bold text-sm shadow-md overflow-hidden shrink-0 border-2 border-[rgba(255,255,255,0.2)]">
-                  {customProfile?.avatar_url || user?.user_metadata?.avatar_url ? (
-                    <img src={customProfile?.avatar_url || user?.user_metadata?.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  {customProfile?.avatar_url || user?.photoURL ? (
+                    <img src={customProfile?.avatar_url || user?.photoURL || ''} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-[14px] sm:text-[16px] tracking-wide">
                       {customProfile?.first_name
                         ? customProfile.first_name.charAt(0).toUpperCase() + (customProfile.last_name ? customProfile.last_name.charAt(0).toUpperCase() : '')
-                        : user?.user_metadata?.first_name
-                          ? user.user_metadata.first_name.charAt(0).toUpperCase() + (user.user_metadata.last_name ? user.user_metadata.last_name.charAt(0).toUpperCase() : '')
+                        : user?.displayName
+                          ? user.displayName.charAt(0).toUpperCase()
                           : 'AD'
                       }
                     </span>
@@ -229,17 +230,15 @@ export function AdminLayout() {
                 </div>
                 <div className="flex flex-col items-start text-left ml-0 max-w-[105px] sm:max-w-[140px] lg:max-w-none">
                   <p className="text-[13px] sm:text-[14px] lg:text-[15px] font-bold text-white leading-tight truncate w-full">
-                    {customProfile?.first_name || user?.user_metadata?.first_name
-                      ? `${customProfile?.first_name || user?.user_metadata?.first_name} ${customProfile?.last_name || user?.user_metadata?.last_name || ''}`
+                    {customProfile?.first_name || user?.displayName
+                      ? `${customProfile?.first_name || user?.displayName} ${customProfile?.last_name || ''}`.trim()
                       : 'Administrador'
                     }
                   </p>
                   <p className="text-[11px] sm:text-[12px] lg:text-[13px] font-semibold text-[#94A3B8] leading-tight mt-0.5 truncate w-full">
                     {(customProfile?.creci_state && customProfile?.creci_number)
                       ? `CRECI-${customProfile.creci_state} ${customProfile.creci_number}`
-                      : user?.user_metadata?.creci
-                        ? `CRECI ${user.user_metadata.creci}`
-                        : 'CRECI não informado'
+                      : 'CRECI não informado'
                     }
                   </p>
                 </div>
@@ -268,14 +267,14 @@ export function AdminLayout() {
                     </div>
                     <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-[rgba(25,146,255,0.1)] shrink-0 flex items-center gap-4">
                       <div className="w-[48px] h-[48px] rounded-full overflow-hidden shrink-0">
-                        {customProfile?.avatar_url || user?.user_metadata?.avatar_url ? (
-                          <img src={customProfile?.avatar_url || user?.user_metadata?.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                        {customProfile?.avatar_url || user?.photoURL ? (
+                          <img src={customProfile?.avatar_url || user?.photoURL || ''} alt="Avatar" className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full bg-[#1685FF] flex items-center justify-center text-white font-bold text-lg">
                             {customProfile?.first_name
                               ? customProfile.first_name.charAt(0).toUpperCase()
-                              : user?.user_metadata?.first_name
-                                ? user.user_metadata.first_name.charAt(0).toUpperCase()
+                              : user?.displayName
+                                ? user.displayName.charAt(0).toUpperCase()
                                 : 'AD'
                             }
                           </div>
@@ -283,17 +282,15 @@ export function AdminLayout() {
                       </div>
                       <div>
                         <p className="text-[18px] font-bold text-[#0F172A] dark:text-white truncate">
-                          {customProfile?.first_name || user?.user_metadata?.first_name
-                            ? `${customProfile?.first_name || user?.user_metadata?.first_name} ${customProfile?.last_name || user?.user_metadata?.last_name || ''}`
+                          {customProfile?.first_name || user?.displayName
+                            ? `${customProfile?.first_name || user?.displayName} ${customProfile?.last_name || ''}`.trim()
                             : 'Administrador'
                           }
                         </p>
                         <p className="text-[14px] font-semibold text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5">
                           {(customProfile?.creci_state && customProfile?.creci_number)
                             ? `CRECI-${customProfile.creci_state} ${customProfile.creci_number}`
-                            : user?.user_metadata?.creci
-                              ? `CRECI ${user.user_metadata.creci}`
-                              : 'CRECI não informado'
+                            : 'CRECI não informado'
                           }
                         </p>
                       </div>
@@ -319,11 +316,11 @@ export function AdminLayout() {
             isOpen={isProfileModalOpen}
             onClose={() => setIsProfileModalOpen(false)}
             initialData={{
-              first_name: customProfile?.first_name || user?.user_metadata?.first_name || '',
-              last_name: customProfile?.last_name || user?.user_metadata?.last_name || '',
+              first_name: customProfile?.first_name || (user?.displayName ? user.displayName.split(' ')[0] : ''),
+              last_name: customProfile?.last_name || (user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : ''),
               creci_state: customProfile?.creci_state || '',
-              creci_number: customProfile?.creci_number || user?.user_metadata?.creci || '',
-              avatar_url: customProfile?.avatar_url || user?.user_metadata?.avatar_url || ''
+              creci_number: customProfile?.creci_number || '',
+              avatar_url: customProfile?.avatar_url || user?.photoURL || ''
             }}
             onSave={(data) => {
               setCustomProfile(data)

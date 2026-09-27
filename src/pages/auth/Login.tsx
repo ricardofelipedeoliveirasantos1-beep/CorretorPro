@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { useAuth } from '../../contexts/AuthContext'
-import { supabase } from '../../lib/supabase'
+import { auth } from '../../lib/firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 export function Login() {
   const navigate = useNavigate()
@@ -29,23 +30,26 @@ export function Login() {
     }
 
     if (isDemoEnv) {
-      // Modo Demonstração: Bypass completo do Supabase
+      // Modo Demonstração
       signInDemo(email)
       navigate('/dashboard')
       return
     }
 
-    // Fluxo Real de Produção
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (signInError) {
-      setError('E-mail ou senha incorretos.')
-      setIsLoading(false)
-    } else {
+    // Fluxo Real de Produção (Firebase Auth)
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
       navigate('/dashboard')
+    } catch (signInError: any) {
+      console.error(signInError)
+      if (signInError.code === 'auth/invalid-email') {
+        setError('Informe um e-mail válido.')
+      } else if (signInError.code === 'auth/user-disabled') {
+        setError('Esta conta está desativada.')
+      } else {
+        setError('E-mail ou senha incorretos.')
+      }
+      setIsLoading(false)
     }
   }
 
